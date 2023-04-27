@@ -49,6 +49,7 @@ const SingleDomestic = () => {
                 span.className = "roadText";
             }
         })
+        mapRef.current.style.position = 'absolute';
     },[])
 
     return (
@@ -56,9 +57,9 @@ const SingleDomestic = () => {
             {
                 currentState == 0 ? 
                 <Style.ViewWrapper>
-                    <Style.RoadWrapper ref={roadRef}>
+                    <Style.RoadWrapper ref={roadRef} className="panorama">
                     </Style.RoadWrapper>
-                    <Style.MapWrapper ref={mapRef}>
+                    <Style.MapWrapper ref={mapRef} className="map">
                     </Style.MapWrapper>
                 </Style.ViewWrapper>
                 : null
