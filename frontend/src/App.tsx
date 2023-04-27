@@ -10,8 +10,8 @@ function App() {
         <Route path="/" />
         <Route path="/game" element={<Outlet />}>
           <Route index />
-          <Route path="/single" element={<SingleGamePage />} />
-          <Route path="/multi" />
+          <Route path="single" element={<SingleGamePage />} />
+          <Route path="multi" />
         </Route>
       </Routes>
     </React.Fragment>
