@@ -2,11 +2,14 @@ import React from 'react';
 import { Routes } from 'react-router';
 import { Route, Outlet } from 'react-router-dom';
 import { MultiGamePage } from './present/pages/MultiGamePage';
+import * as Styled from './App.Styled';
 import SingleGamePage from './present/pages/SingleGamePage';
+import GlobalStyle from './action/GlobalStyle';
 
 function App() {
   return (
-    <React.Fragment>
+    <Styled.AppWrapper>
+      <GlobalStyle />
       <Routes>
         <Route path="/" />
         <Route path="/game" element={<Outlet />}>
@@ -15,7 +18,7 @@ function App() {
           <Route path="multi" element={<MultiGamePage />} />
         </Route>
       </Routes>
-    </React.Fragment>
+    </Styled.AppWrapper>
   );
 }
 
