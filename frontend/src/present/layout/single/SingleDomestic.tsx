@@ -1,17 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as Style from './SingleDomestic.Styled';
+import * as Api from '../../../action/module/singleplay/domestic/SingleDomesticAPI';
 
 const SingleDomestic = () => {
     const naver = window.naver;
     const [currentStage, setCurrentStage] = useState(1);
     const [currentState, setCurrentState] = useState(0);
-    const [selectPosition, setSelectPosition] = useState();
-    const [answerPosition, setAnswerPosition] = useState();
+    const [selectPosition, setSelectPosition] = useState<null | naver.maps.LatLng>(null);
+    const [answerPosition, setAnswerPosition] = useState<null | naver.maps.LatLng>(null);
 
     const mapRef = useRef<HTMLDivElement | null>(null);
     const roadRef = useRef<HTMLDivElement | null>(null);
     const mapObject = useRef<null | naver.maps.Map>(null);
     const roadObject = useRef<null | naver.maps.Panorama>(null);
+    let selectMarker = useRef<null | naver.maps.Marker>(null);
+    let answerMarker = useRef<null | naver.maps.Marker>(null);
 
     useEffect(() => {
         const handleResize = () => {
@@ -31,30 +34,8 @@ const SingleDomestic = () => {
     },[currentStage])
 
     useEffect(() => {
-        if(!mapRef.current || !roadRef.current) return;
-        const map:naver.maps.Map = new naver.maps.Map(mapRef.current, {
-            center: new naver.maps.LatLng(36.6349, 127.9076),
-            zoom: 1,
-            logoControl: false,
-            mapDataControl: false,
-            zoomControl: false,
-            scaleControl: false
-        });
-        const pano = new naver.maps.Panorama(roadRef.current, {
-            position: new naver.maps.LatLng(36.1073, 128.4175),
-            aroundControl: false,
-        })
-        mapObject.current = map;
-        roadObject.current = pano;
-        naver.maps.Event.addListener(pano, "pano_status", () => {
-            if(!roadRef.current) return;
-            const spans = roadRef.current.querySelectorAll('span');
-            for (const span of spans) {
-                span.className = "roadText";
-            }
-        })
-        roadRef.current.style.position = 'absolute';
-        mapRef.current.style.position = 'absolute';
+        let data: Api.InitType = {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, selectMarker};
+        Api.Init(data);
     },[])
 
     return (
