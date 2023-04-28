@@ -2,14 +2,13 @@ import React, { useEffect, useRef, useState } from "react";
 import * as Style from './SingleDomestic.Styled';
 import * as Api from '../../../action/module/singleplay/domestic/SingleDomesticAPI';
 import FinishBtn from "../../component/single/FinishBtn";
+import ResultMap from "../../component/single/ResultMap";
 
 const SingleDomestic = () => {
     const naver = window.naver;
     const [currentStage, setCurrentStage] = useState(1);
     const [currentState, setCurrentState] = useState(0);
     const [selectPosition, setSelectPosition] = useState<null | naver.maps.LatLng>(null);
-    const [answerPosition, setAnswerPosition] = useState<null | naver.maps.LatLng>(null);
-    const [viewPosition, setViewPosition] = useState<null | naver.maps.LatLng>(null);
 
     const mapRef = useRef<HTMLDivElement | null>(null);
     const roadRef = useRef<HTMLDivElement | null>(null);
@@ -36,7 +35,7 @@ const SingleDomestic = () => {
     },[currentStage])
 
     useEffect(() => {
-        let data: Api.InitType = {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, selectMarker, setViewPosition};
+        let data: Api.InitType = {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, selectMarker};
         Api.Init(data);
     },[])
 
@@ -49,15 +48,13 @@ const SingleDomestic = () => {
             {
                 currentState == 0 ? 
                 <Style.ViewWrapper>
-                    <Style.RoadWrapper ref={roadRef} className="panorama">
-                    </Style.RoadWrapper>
-                    <Style.MapWrapper ref={mapRef} className="map">
-                    </Style.MapWrapper>
-                    <FinishBtn finishStage={finishStage} />
+                    <Style.RoadWrapper ref={roadRef} className="panorama" />
+                    <Style.MapWrapper ref={mapRef} className="map" />
+                    {
+                        selectPosition ? <FinishBtn finishStage={finishStage} /> : null
+                    }
                 </Style.ViewWrapper>
-                :
-                <Style.ResultWrapper>
-                </Style.ResultWrapper>
+                :<ResultMap selectPosition={selectPosition} currentStage={currentStage}/>
             }
         </Style.SingleWrapper>
     )

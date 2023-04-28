@@ -6,14 +6,12 @@ export type InitType = {
     selectPosition: naver.maps.LatLng | null;
     setSelectPosition: React.Dispatch<React.SetStateAction<naver.maps.LatLng | null>>;
     selectMarker: React.MutableRefObject<naver.maps.Marker | null>;
-    setViewPosition: React.Dispatch<React.SetStateAction<naver.maps.LatLng | null>>;
 }
 
 export const Init = (data:InitType):void => {
-    const {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, setViewPosition} = data;
+    const {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition} = data;
     let {selectMarker} = data;
     if(!mapRef.current || !roadRef.current) return;
-    setViewPosition(new naver.maps.LatLng(36.6349, 127.9076));
     const map:naver.maps.Map = new naver.maps.Map(mapRef.current, {
         center: new naver.maps.LatLng(36.6349, 127.9076),
         zoom: 1,
@@ -49,9 +47,6 @@ export const Init = (data:InitType):void => {
             setSelectPosition(e.coord);
         }
     });
-    naver.maps.Event.addListener(map, 'dragend', () => {
-        setViewPosition(new naver.maps.LatLng(map.getCenter().y, map.getCenter().x));
-    })
     roadRef.current.style.position = 'absolute';
     mapRef.current.style.position = 'absolute';
 }
