@@ -31,7 +31,6 @@ const SingleDomestic = () => {
     },[currentStage])
 
     useEffect(() => {
-        console.log('네이버', naver);
         if(!mapRef.current || !roadRef.current) return;
         const map:naver.maps.Map = new naver.maps.Map(mapRef.current, {
             center: new naver.maps.LatLng(36.6349, 127.9076),
@@ -55,9 +54,6 @@ const SingleDomestic = () => {
             }
         })
         roadRef.current.style.position = 'absolute';
-        roadRef.current.style.width = '100%';
-        roadRef.current.style.height = '100%';
-
         mapRef.current.style.position = 'absolute';
     },[])
 
