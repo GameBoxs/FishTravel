@@ -12,8 +12,11 @@ export const MultiGameLoading = (props: Props) => {
           <RoundCount>
             Round 1
           </RoundCount>
+          <MiddleContent>
+
+          </MiddleContent>
           <FallingMessage>
-            
+            XX가 떨어지고 있습니다.
           </FallingMessage>
         </Jumbotron>
       </Background>
@@ -44,8 +47,17 @@ const RoundCount = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 6vh;
-`
+  `
 
 const FallingMessage = styled.div`
-  
+  border-top: 1px black solid;
+  height: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 6vh;
+`
+const MiddleContent = styled.div`
+  width: 100%;
+  height: 60%;
 `

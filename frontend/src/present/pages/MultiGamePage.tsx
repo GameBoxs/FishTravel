@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MultiGameLoading } from '../layout/multi/MultiGameLoading';
+import { MultiGameProgress } from '../layout/multi/MultiGameProgress';
 type Props = {
   
 };
@@ -10,10 +11,11 @@ export const MultiGamePage = (props: Props) => {
   //1-1) 게임에 포함된 사람인지 확인
   //1-2) 게임에 포함된 경우, 죽은 사람 화면 띄워줌
   //2) 게임 
-  const [gameStage, setGameStage] = useState(1);
+  const [gameStage, setGameStage] = useState(2);
   return (
     <div>
-      { gameStage === 1 && <MultiGameLoading />}
+      {gameStage === 1 && <MultiGameLoading />}
+      {gameStage === 2 && <MultiGameProgress /> }
     </div>
   );
 };
