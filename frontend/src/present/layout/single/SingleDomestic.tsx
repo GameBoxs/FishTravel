@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as Style from './SingleDomestic.Styled';
 import * as Api from '../../../action/module/singleplay/domestic/SingleDomesticAPI';
+import FinishBtn from "../../component/single/FinishBtn";
 
 const SingleDomestic = () => {
     const naver = window.naver;
@@ -8,6 +9,7 @@ const SingleDomestic = () => {
     const [currentState, setCurrentState] = useState(0);
     const [selectPosition, setSelectPosition] = useState<null | naver.maps.LatLng>(null);
     const [answerPosition, setAnswerPosition] = useState<null | naver.maps.LatLng>(null);
+    const [viewPosition, setViewPosition] = useState<null | naver.maps.LatLng>(null);
 
     const mapRef = useRef<HTMLDivElement | null>(null);
     const roadRef = useRef<HTMLDivElement | null>(null);
@@ -34,9 +36,13 @@ const SingleDomestic = () => {
     },[currentStage])
 
     useEffect(() => {
-        let data: Api.InitType = {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, selectMarker};
+        let data: Api.InitType = {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, selectMarker, setViewPosition};
         Api.Init(data);
     },[])
+
+    const finishStage = () => {
+        setCurrentState(1);
+    }
 
     return (
         <Style.SingleWrapper>
@@ -47,8 +53,11 @@ const SingleDomestic = () => {
                     </Style.RoadWrapper>
                     <Style.MapWrapper ref={mapRef} className="map">
                     </Style.MapWrapper>
+                    <FinishBtn finishStage={finishStage} />
                 </Style.ViewWrapper>
-                : null
+                :
+                <Style.ResultWrapper>
+                </Style.ResultWrapper>
             }
         </Style.SingleWrapper>
     )

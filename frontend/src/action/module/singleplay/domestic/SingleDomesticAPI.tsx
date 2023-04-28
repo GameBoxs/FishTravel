@@ -5,20 +5,23 @@ export type InitType = {
     roadObject:React.MutableRefObject<naver.maps.Panorama | null>;
     selectPosition: naver.maps.LatLng | null;
     setSelectPosition: React.Dispatch<React.SetStateAction<naver.maps.LatLng | null>>;
-    selectMarker: React.MutableRefObject<naver.maps.Marker | null>
+    selectMarker: React.MutableRefObject<naver.maps.Marker | null>;
+    setViewPosition: React.Dispatch<React.SetStateAction<naver.maps.LatLng | null>>;
 }
 
 export const Init = (data:InitType):void => {
-    const {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition} = data;
+    const {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, setViewPosition} = data;
     let {selectMarker} = data;
     if(!mapRef.current || !roadRef.current) return;
+    setViewPosition(new naver.maps.LatLng(36.6349, 127.9076));
     const map:naver.maps.Map = new naver.maps.Map(mapRef.current, {
         center: new naver.maps.LatLng(36.6349, 127.9076),
         zoom: 1,
         logoControl: false,
         mapDataControl: false,
         zoomControl: false,
-        scaleControl: false
+        scaleControl: false,
+        tileSpare: 5,
     });
     const pano = new naver.maps.Panorama(roadRef.current, {
         position: new naver.maps.LatLng(36.1073, 128.4175),
@@ -46,6 +49,9 @@ export const Init = (data:InitType):void => {
             setSelectPosition(e.coord);
         }
     });
+    naver.maps.Event.addListener(map, 'dragend', () => {
+        setViewPosition(new naver.maps.LatLng(map.getCenter().y, map.getCenter().x));
+    })
     roadRef.current.style.position = 'absolute';
     mapRef.current.style.position = 'absolute';
 }
