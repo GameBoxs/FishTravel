@@ -14,6 +14,17 @@ const SingleDomestic = () => {
     const roadObject = useRef<null | naver.maps.Panorama>(null);
 
     useEffect(() => {
+        const handleResize = () => {
+            if (!roadObject.current) return;
+            roadObject.current.setSize(new naver.maps.Size(window.innerWidth, window.innerHeight));
+        };
+        window.addEventListener("resize", handleResize);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+        };
+    }, []);
+
+    useEffect(() => {
         if(currentStage == 0) {
 
         }
@@ -32,12 +43,6 @@ const SingleDomestic = () => {
         });
         const pano = new naver.maps.Panorama(roadRef.current, {
             position: new naver.maps.LatLng(36.1073, 128.4175),
-            pov: {
-                pan: -135,
-                tilt: 29,
-                fov: 100
-            },
-            
             aroundControl: false,
         })
         mapObject.current = map;
@@ -49,6 +54,10 @@ const SingleDomestic = () => {
                 span.className = "roadText";
             }
         })
+        roadRef.current.style.position = 'absolute';
+        roadRef.current.style.width = '100%';
+        roadRef.current.style.height = '100%';
+
         mapRef.current.style.position = 'absolute';
     },[])
 

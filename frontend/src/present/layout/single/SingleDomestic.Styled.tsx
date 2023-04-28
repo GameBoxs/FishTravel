@@ -16,20 +16,22 @@ export const MapWrapper = styled.div`
         outline: none;
     }
     :hover {
+        width: 35%;
+        height: 50%;
         opacity: 1;
     }
     z-index: 100;
 `
 
 export const RoadWrapper = styled.div`
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
     & .roadText {
         visibility: hidden;
     }
 `
 
 export const SingleWrapper = styled.div`
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
 `;
