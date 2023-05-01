@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { CgArrowsExpandLeft } from "react-icons/cg";
 import useLoadScript from "../../../action/hooks/useLoadScript";
+import { Timer } from "../../component/multi/Timer";
+import { Ranking } from "../../component/multi/Ranking";
 type Props = {
   
 };
@@ -11,30 +13,46 @@ export const MultiGameProgress = (props: Props) => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const panoRef = useRef<google.maps.StreetViewPanorama | null>(null);
   const controlRef = useRef<HTMLDivElement>(null);
+  const markerRef = useRef<google.maps.Marker | null>(null);
   const [isExpand, setIsExpand] = useState(false);
   useEffect(() => {
     if (isLoaded === "loading") return;
-    const fenway = { lat: 42.345573, lng: -71.098326 };
+    const startPos = { lat: 42.345573, lng: -71.098326 };
+    // 지도 객체 없으면 초기화
     if (mapRef.current === null) { 
       mapRef.current = new google.maps.Map(
         document.getElementById("map") as HTMLElement,
         {
-          center: fenway,
+          center: startPos,
           zoom: 14,
           fullscreenControl: false,
           panControl: false,
           disableDefaultUI: true,
+          clickableIcons: false,
         }
       );
+      mapRef.current.addListener("click", (event: google.maps.MapMouseEvent) => { 
+        const clickedPos = event.latLng;
+        if (markerRef.current != null) {
+          markerRef.current.setPosition(clickedPos);
+        } else { 
+          markerRef.current = new google.maps.Marker({
+            map: mapRef.current,
+            position: clickedPos,
+            title: "ㅎㅇ"
+          })
+        }
+      })
       if (controlRef.current !== null) { 
         mapRef.current.controls[google.maps.ControlPosition.LEFT_TOP].push(controlRef.current);
       }
     }
+    // 파노라마(스트리트 뷰) 객체 없으면 초기화
     if (panoRef.current === null) { 
       panoRef.current = new google.maps.StreetViewPanorama(
         document.getElementById("pano") as HTMLElement,
         {
-          position: fenway,
+          position: startPos,
           pov: {
             heading: 34,
             pitch: 10,
@@ -62,13 +80,15 @@ export const MultiGameProgress = (props: Props) => {
           <CgArrowsExpandLeft />
         </CustomButton>
       </div>
+      <Timer />
+      <Ranking />
     </div>
   );
 };
 
 const MapContent = styled.div<{isExpand: boolean}>`
-  width: ${(props)=>props.isExpand ? "40vw" : "20vw"};
-  height: ${(props)=>props.isExpand ? "40vh" : "20vh"};
+  width: ${(props)=>props.isExpand ? "40vw" : "25vw"};
+  height: ${(props)=>props.isExpand ? "40vh" : "25vh"};
   position: absolute;
   z-index: 10;
   bottom: 0;
