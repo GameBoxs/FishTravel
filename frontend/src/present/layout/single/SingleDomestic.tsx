@@ -3,12 +3,14 @@ import * as Style from './SingleDomestic.Styled';
 import * as Api from '../../../action/module/singleplay/domestic/SingleDomesticAPI';
 import FinishBtn from "../../component/single/FinishBtn";
 import ResultMap from "../../component/single/ResultMap";
+import CountTimer from "../../component/single/CountTimer";
 
 const SingleDomestic = () => {
     const naver = window.naver;
     const [currentStage, setCurrentStage] = useState(1);
     const [currentState, setCurrentState] = useState(0);
     const [selectPosition, setSelectPosition] = useState<null | naver.maps.LatLng>(null);
+    const [timer, setTimer] = useState(120);
 
     const mapRef = useRef<HTMLDivElement | null>(null);
     const roadRef = useRef<HTMLDivElement | null>(null);
@@ -48,6 +50,7 @@ const SingleDomestic = () => {
             {
                 currentState == 0 ? 
                 <Style.ViewWrapper>
+                    <CountTimer timer={timer}/>
                     <Style.RoadWrapper ref={roadRef} className="panorama" />
                     <Style.MapWrapper ref={mapRef} className="map" />
                     {
