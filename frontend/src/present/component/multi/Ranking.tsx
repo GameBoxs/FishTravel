@@ -14,7 +14,7 @@ const list = [
   },
   {
     ranking: 2,
-    memberId: "이박최",
+    memberId: "이박최asdasdasd",
     score: 99,
   },
   {
@@ -39,7 +39,9 @@ export const Ranking = (props: Props) => {
     <RankingContainer isExpand={isExpand}>
       <p>순위</p>
       <RankingContent>
-        {list.map((ranking) => <RankingItem item={ranking}/>)}
+        {isExpand ? list.map((ranking) => <RankingItem item={ranking} />)
+          : <RankingItem item={list[0]} />
+        }
       </RankingContent>
       <RankingControlPanel>
         <RankingCollapseButton onClick={() => { setIsExpand((prev)=>!prev)}}>
@@ -50,8 +52,6 @@ export const Ranking = (props: Props) => {
   );
 };
 const RankingContainer = styled.div<{isExpand: boolean}>`
-  display: grid;
-  grid-column: 1;
   position: absolute;
   right: 1vw;
   top: 1vw;
@@ -61,7 +61,7 @@ const RankingContainer = styled.div<{isExpand: boolean}>`
   border-radius: 1rem;
   overflow: hidden;
   z-index: 20;
-  justify-content: center;
+  text-align: center;
   -webkit-transition: height 1s ease-in-out;
   -moz-transition: height 1s ease-in-out;
   -o-transition: height 1s ease-in-out;
@@ -71,7 +71,7 @@ const RankingContainer = styled.div<{isExpand: boolean}>`
 const RankingContent = styled.div`
   display: grid;
   padding: 8px;
-  width: 100%;
+  width: calc(100% - 16px);
 `
 const RankingCollapseButton = styled.button`
   background: white;
