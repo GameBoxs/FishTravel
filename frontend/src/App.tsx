@@ -4,13 +4,14 @@ import { Route, Outlet } from 'react-router-dom';
 import * as Styled from './App.Styled';
 import SingleGamePage from './present/pages/SingleGamePage';
 import GlobalStyle from './action/GlobalStyle';
+import LandingPage from './present/pages/LandingPage';
 
 function App() {
   return (
     <Styled.AppWrapper>
       <GlobalStyle />
       <Routes>
-        <Route path="/" />
+        <Route path="/" element={<LandingPage />}></Route>
         <Route path="/game" element={<Outlet />}>
           <Route index />
           <Route path="single" element={<SingleGamePage />} />
