@@ -50,7 +50,7 @@ const SingleDomestic = () => {
             {
                 currentState == 0 ? 
                 <Style.ViewWrapper>
-                    <CountTimer timer={timer}/>
+                    <CountTimer timer={timer} setTimer={setTimer}/>
                     <Style.RoadWrapper ref={roadRef} className="panorama" />
                     <Style.MapWrapper ref={mapRef} className="map" />
                     {

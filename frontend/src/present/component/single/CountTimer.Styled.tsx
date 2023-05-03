@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const TimerText = styled.p`
     text-align: center;
     color: #ffffffb5;
-    font-size: 30px;
+    font-size: 33px;
     font-weight: 800;
 `
 
