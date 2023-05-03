@@ -5,68 +5,53 @@ import useLoadScript from "../../../action/hooks/useLoadScript";
 import { Timer } from "../../component/multi/Timer";
 import { Ranking } from "../../component/multi/Ranking";
 type Props = {
-  
+  isObserver: boolean,
 };
-
-export const MultiGameProgress = (props: Props) => {
-  const isLoaded = useLoadScript("https://maps.googleapis.com/maps/api/js?key=AIzaSyC5fl-yV_BZhfIXZYDpU4JnCwFGDhd8oQA");
-  const mapRef = useRef<google.maps.Map | null>(null);
-  const panoRef = useRef<google.maps.StreetViewPanorama | null>(null);
+export const MultiGameDomestic = (props: Props) => {
+  const isLoaded = useLoadScript("  https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=4vgyzjsnlj&submodules=panorama");
+  const mapRef = useRef<naver.maps.Map | null>(null);
+  const panoRef = useRef<naver.maps.Panorama | null>(null);
   const controlRef = useRef<HTMLDivElement>(null);
-  const markerRef = useRef<google.maps.Marker | null>(null);
+  const markerRef = useRef<naver.maps.Marker | null>(null);
   const [isExpand, setIsExpand] = useState(false);
   useEffect(() => {
     if (isLoaded === "loading") return;
-    const startPos = { lat: 42.345573, lng: -71.098326 };
+    const startPos = new naver.maps.LatLng(37.3599605, 127.1058814);
     // 지도 객체 없으면 초기화
     if (mapRef.current === null) { 
-      mapRef.current = new google.maps.Map(
+      mapRef.current = new naver.maps.Map(
         document.getElementById("map") as HTMLElement,
         {
           center: startPos,
           zoom: 14,
-          fullscreenControl: false,
-          panControl: false,
-          disableDefaultUI: true,
-          clickableIcons: false,
+          scaleControl: false,
         }
       );
-      mapRef.current.addListener("click", (event: google.maps.MapMouseEvent) => { 
-        const clickedPos = event.latLng;
-        if (markerRef.current != null) {
-          markerRef.current.setPosition(clickedPos);
-        } else { 
-          markerRef.current = new google.maps.Marker({
-            map: mapRef.current,
-            position: clickedPos,
-            title: "ㅎㅇ"
-          })
-        }
-      })
-      if (controlRef.current !== null) { 
-        mapRef.current.controls[google.maps.ControlPosition.LEFT_TOP].push(controlRef.current);
-      }
+      // mapRef.current.addListener("click", (event: naver.maps.ev) => { 
+      //   const clickedPos = event.latLng;
+      //   if (markerRef.current != null) {
+      //     markerRef.current.setPosition(clickedPos);
+      //   } else { 
+      //     markerRef.current = new google.maps.Marker({
+      //       map: mapRef.current,
+      //       position: clickedPos,
+      //       title: "ㅎㅇ"
+      //     })
+      //   }
+      // })
+      // if (controlRef.current !== null) { 
+      //   mapRef.current.controls[google.maps.ControlPosition.LEFT_TOP].push(controlRef.current);
+      // }
     }
     // 파노라마(스트리트 뷰) 객체 없으면 초기화
     if (panoRef.current === null) { 
-      panoRef.current = new google.maps.StreetViewPanorama(
+      panoRef.current = new naver.maps.Panorama(
         document.getElementById("pano") as HTMLElement,
         {
           position: startPos,
-          pov: {
-            heading: 34,
-            pitch: 10,
-          },
-          motionTracking: false,
-          motionTrackingControl: false,
-          zoomControl: false,
-          fullscreenControl: false,
+          flightSpot: false,
         }
       );
-      panoRef.current.setOptions({
-        addressControl: false,
-        showRoadLabels: false,
-      });
     }
   }, [isLoaded]);
   return (
