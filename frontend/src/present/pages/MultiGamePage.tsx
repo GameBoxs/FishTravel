@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { MultiGameLoading } from '../layout/multi/MultiGameLoading';
-import { MultiGameProgress } from '../layout/multi/MultiGameProgress';
+import { MultiGameDomestic } from '../layout/multi/MultiGameDomestic';
+import { MultiGameInternational } from '../layout/multi/MultiGameInternational';
 type Props = {
   
 };
@@ -15,7 +16,7 @@ export const MultiGamePage = (props: Props) => {
   return (
     <div>
       {gameStage === 1 && <MultiGameLoading />}
-      {gameStage === 2 && <MultiGameProgress /> }
+      {gameStage === 2 && <MultiGameInternational /> }
     </div>
   );
 };
