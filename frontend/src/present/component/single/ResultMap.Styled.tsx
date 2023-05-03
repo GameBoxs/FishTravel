@@ -1,5 +1,14 @@
 import styled from "styled-components";
 
+export const TempMarker = styled.div`
+    width: 25px;
+    height: 25px;
+    background: black;
+    position: absolute;
+    z-index: 10;
+    border-radius: 50%;
+`
+
 export const ResultWrapper = styled.div`
     width: 100%;
     height: 100%;
@@ -25,6 +34,12 @@ export const ResultMap = styled.div`
     background-color: white;
     top: 12%;
     left: 30%;
+    :focus {
+        outline: none;
+    }
+    * {
+        cursor: default !important;
+    }
 `
 
 export const ResultInfo = styled.div`

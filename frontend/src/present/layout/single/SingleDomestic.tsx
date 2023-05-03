@@ -35,6 +35,11 @@ const SingleDomestic = () => {
 
         }
     },[currentStage])
+    useEffect(() => {
+        if(timer == 0) {
+            setTimeout(() => finishStage(), 500);
+        }
+    },[timer])
 
     useEffect(() => {
         let data: Api.InitType = {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, selectMarker};
@@ -42,6 +47,7 @@ const SingleDomestic = () => {
     },[])
 
     const finishStage = () => {
+        setTimer(0);
         setCurrentState(1);
     }
 
