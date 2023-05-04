@@ -47,7 +47,7 @@ const ResultMap = (props:propsType) => {
                 <Style.ResultText>4</Style.ResultText>
             </Style.ResultInfo>
             {
-                currentStage < 4 ? 
+                currentStage == 3 ? 
                 <Style.ResultNextBtn onClick={startStage}>Next</Style.ResultNextBtn>
                 :
                 <Style.ResultNextBtn onClick={moveHome}>Finish</Style.ResultNextBtn>
