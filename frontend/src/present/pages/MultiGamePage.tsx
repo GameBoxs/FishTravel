@@ -16,7 +16,7 @@ export const MultiGamePage = (props: Props) => {
   return (
     <div>
       {gameStage === 1 && <MultiGameLoading />}
-      {gameStage === 2 && <MultiGameInternational /> }
+      {gameStage === 2 && <MultiGameDomestic isObserver={false} /> }
     </div>
   );
 };

@@ -8,14 +8,26 @@ type Props = {
   isObserver: boolean,
 };
 export const MultiGameDomestic = (props: Props) => {
-  const isLoaded = useLoadScript("  https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=4vgyzjsnlj&submodules=panorama");
+  const isLoaded = useLoadScript("https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=4vgyzjsnlj&submodules=panorama");
   const mapRef = useRef<naver.maps.Map | null>(null);
   const panoRef = useRef<naver.maps.Panorama | null>(null);
   const controlRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<naver.maps.Marker | null>(null);
   const [isExpand, setIsExpand] = useState(false);
   useEffect(() => {
-    if (isLoaded === "loading") return;
+    console.log(isLoaded);
+    if (isLoaded !== "ready") return;
+    (naver.maps as any).onJSContentLoaded = () => { 
+      panoRef.current = new naver.maps.Panorama(
+        document.getElementById("pano") as HTMLElement,
+        {
+          position: startPos,
+          flightSpot: false,
+        }
+      );
+    }
+    console.log(naver.maps.Panorama);
+    
     const startPos = new naver.maps.LatLng(37.3599605, 127.1058814);
     // 지도 객체 없으면 초기화
     if (mapRef.current === null) { 
@@ -39,12 +51,12 @@ export const MultiGameDomestic = (props: Props) => {
       //     })
       //   }
       // })
-      // if (controlRef.current !== null) { 
-      //   mapRef.current.controls[google.maps.ControlPosition.LEFT_TOP].push(controlRef.current);
-      // }
+      if (controlRef.current !== null) {
+        // mapRef.current.controls[naver.maps.Position.TOP_LEFT].push(controlRef.current);
+      }
     }
     // 파노라마(스트리트 뷰) 객체 없으면 초기화
-    if (panoRef.current === null) { 
+    if (panoRef.current === null && naver.maps.Panorama !== undefined) { 
       panoRef.current = new naver.maps.Panorama(
         document.getElementById("pano") as HTMLElement,
         {
@@ -53,20 +65,20 @@ export const MultiGameDomestic = (props: Props) => {
         }
       );
     }
-  }, [isLoaded]);
+  }, [isLoaded, window.naver]);
   return (
     <div>
-      <MapContent id="map" isExpand={isExpand}> 
-      </MapContent>
       <StreetViewContent id="pano">
+        <Timer />
+        <Ranking />
+        <MapContent id="map" isExpand={isExpand}> 
+        </MapContent>
       </StreetViewContent>
       <div ref={controlRef}>
         <CustomButton onClick={() => {setIsExpand(prevData=>!prevData)}}>
           <CgArrowsExpandLeft />
         </CustomButton>
       </div>
-      <Timer />
-      <Ranking />
     </div>
   );
 };
@@ -75,7 +87,7 @@ const MapContent = styled.div<{isExpand: boolean}>`
   width: ${(props)=>props.isExpand ? "40vw" : "25vw"};
   height: ${(props)=>props.isExpand ? "40vh" : "25vh"};
   position: absolute;
-  z-index: 10;
+  z-index: 999;
   bottom: 0;
   right: 0;
   -webkit-transition: width 1s ease-in-out;
