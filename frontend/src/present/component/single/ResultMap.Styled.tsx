@@ -8,7 +8,7 @@ export const ResultNextBtn = styled.div`
     border-radius: 50px;
     position: relative;
     top: 50%;
-    left: 45%;
+    left: 44%;
     text-align: center;
     line-height: 35px;
     font-weight: 900;

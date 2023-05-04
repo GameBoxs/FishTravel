@@ -1,14 +1,17 @@
 import React, {useEffect, useRef, useState} from "react";
+import { useNavigate } from "react-router-dom";
 import * as Style from "./ResultMap.Styled";
 import * as Api from "../../../action/module/singleplay/domestic/SingleDomesticResultAPI";
 
 type propsType = {
     selectPosition: naver.maps.LatLng | null;
     currentStage: number;
+    startStage: () => void;
 }
 
 const ResultMap = (props:propsType) => {
-    const {currentStage, selectPosition} = props;
+    const {currentStage, selectPosition, startStage} = props;
+    const moveNavigation = useNavigate();
     
     const [answerPosition, setAnswerPosition] = useState<null | naver.maps.LatLng>(new naver.maps.LatLng(36.1073, 128.4175));
     const [distancePoint, setDistancePoint] = useState(0);
@@ -28,6 +31,9 @@ const ResultMap = (props:propsType) => {
         resultMapObject.current = initDatas.resultMapObject.current ? initDatas.resultMapObject.current : null;
         Api.makeMarker({selectPosition, answerPosition, resultMapObject});
     }
+    const moveHome = () => {
+        moveNavigation('/');
+    }
 
     return (
         answerPosition ?
@@ -40,7 +46,12 @@ const ResultMap = (props:propsType) => {
                 <Style.ResultText>{distancePoint}M</Style.ResultText>
                 <Style.ResultText>4</Style.ResultText>
             </Style.ResultInfo>
-            <Style.ResultNextBtn>Next</Style.ResultNextBtn>
+            {
+                currentStage < 4 ? 
+                <Style.ResultNextBtn onClick={startStage}>Next</Style.ResultNextBtn>
+                :
+                <Style.ResultNextBtn onClick={moveHome}>Finish</Style.ResultNextBtn>
+            }
         </Style.ResultWrapper>
         : <h1>로딩중</h1>
     )

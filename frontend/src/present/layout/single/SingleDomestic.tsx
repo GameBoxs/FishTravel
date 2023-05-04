@@ -7,7 +7,7 @@ import CountTimer from "../../component/single/CountTimer";
 
 const SingleDomestic = () => {
     const naver = window.naver;
-    const [currentStage, setCurrentStage] = useState(1);
+    const [currentStage, setCurrentStage] = useState(0);
     const [currentState, setCurrentState] = useState(0);
     const [selectPosition, setSelectPosition] = useState<null | naver.maps.LatLng>(null);
     const [timer, setTimer] = useState(120);
@@ -31,24 +31,39 @@ const SingleDomestic = () => {
     }, []);
 
     useEffect(() => {
-        if(currentStage == 0) {
-
+        if(currentState == 0) {
+            resetData();
         }
-    },[currentStage])
+    },[currentState])
+
     useEffect(() => {
         if(timer == 0) {
             setTimeout(() => finishStage(), 500);
         }
     },[timer])
 
-    useEffect(() => {
-        let data: Api.InitType = {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, selectMarker};
-        Api.Init(data);
-    },[])
+    // useEffect(() => {
+    //     let data: Api.InitType = {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, selectMarker};
+    //     Api.Init(data);
+    // },[])
 
     const finishStage = () => {
         setTimer(0);
         setCurrentState(1);
+    }
+    const resetData = () => {
+        selectMarker.current?.setMap(null);
+        selectMarker.current = null;
+        setTimer(120);
+        setCurrentStage(currentStage+1);
+        setSelectPosition(null);
+        mapObject.current = null;
+        roadObject.current = null;
+        let data: Api.InitType = {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, selectMarker};
+        Api.Init(data);
+    }
+    const startStage =() => {
+        setCurrentState(0);
     }
 
     return (
@@ -63,7 +78,7 @@ const SingleDomestic = () => {
                         selectPosition ? <FinishBtn finishStage={finishStage} /> : null
                     }
                 </Style.ViewWrapper>
-                :<ResultMap selectPosition={selectPosition} currentStage={currentStage}/>
+                :<ResultMap selectPosition={selectPosition} currentStage={currentStage} startStage={startStage}/>
             }
         </Style.SingleWrapper>
     )
