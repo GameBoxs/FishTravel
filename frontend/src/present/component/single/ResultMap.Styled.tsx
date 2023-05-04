@@ -1,12 +1,20 @@
 import styled from "styled-components";
 
-export const TempMarker = styled.div`
-    width: 25px;
-    height: 25px;
-    background: black;
-    position: absolute;
-    z-index: 10;
-    border-radius: 50%;
+export const ResultNextBtn = styled.div`
+    width: 200px;
+    height: 40px;
+    background: green;
+    background-image: linear-gradient(43deg, #33ff00 0%, #00b7ff 46%, #c8ff00 100%);
+    border-radius: 50px;
+    position: relative;
+    top: 50%;
+    left: 45%;
+    text-align: center;
+    line-height: 35px;
+    font-weight: 900;
+    font-size: 35px;
+    color: #ffffffdd;
+    cursor: pointer;
 `
 
 export const ResultWrapper = styled.div`
@@ -14,6 +22,7 @@ export const ResultWrapper = styled.div`
     height: 100%;
     background-color: #4158D0;
     background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
+    position: fixed;
 `
 
 export const StageText = styled.span`
