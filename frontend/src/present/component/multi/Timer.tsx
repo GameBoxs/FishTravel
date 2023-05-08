@@ -2,9 +2,9 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 type Props = {
-  
+  isDomestic: boolean
 };
-export const Timer = (props: Props) => {
+export const Timer = ({ isDomestic }: Props) => {
   const [time, setTime] = useState(100);
   useEffect(() => { 
     const timer = setInterval(() => {
@@ -15,19 +15,19 @@ export const Timer = (props: Props) => {
     return () => clearTimeout(timer);
   }, [])
   return (
-    <StyleTimer>
+    <StyleTimer isDomestic={isDomestic}>
       { Math.floor(time/60) + " : "  + time%60 }
     </StyleTimer>
   );
 };
 
-const StyleTimer = styled.div`
+const StyleTimer = styled.div<{isDomestic: boolean}>`
   position: absolute;
   top: 1vh;
   left: 50%;
   width: 25vw;
   height: 10vh;
-  transform: translateX(-50%);
+  transform: ${(props)=>props.isDomestic ? "translateX(-50%) translate3d(0, 0, 0)" : "translateX(-50%)"};
   background: rgba(255, 255, 255, 0.5);
   border-radius: 10rem;
   z-index: 20;

@@ -4,7 +4,7 @@ import { RankingItem } from "./RankingItem";
 import { BsChevronBarDown, BsChevronBarUp } from "react-icons/bs";
 
 type Props = {
-  
+  isDomestic: boolean
 };
 const list = [
   {
@@ -33,10 +33,10 @@ const list = [
     score: 70,
   },
 ]
-export const Ranking = (props: Props) => {
+export const Ranking = ({isDomestic}: Props) => {
   const [isExpand, setIsExpand] = useState(false);
   return (
-    <RankingContainer isExpand={isExpand}>
+    <RankingContainer isExpand={isExpand} isDomestic={isDomestic}>
       <p>순위</p>
       <RankingContent>
         {isExpand ? list.map((ranking) => <RankingItem item={ranking} />)
@@ -51,7 +51,7 @@ export const Ranking = (props: Props) => {
     </RankingContainer>
   );
 };
-const RankingContainer = styled.div<{isExpand: boolean}>`
+const RankingContainer = styled.div<{ isExpand: boolean, isDomestic: boolean}>`
   position: absolute;
   right: 1vw;
   top: 1vw;
@@ -66,6 +66,7 @@ const RankingContainer = styled.div<{isExpand: boolean}>`
   -moz-transition: height 1s ease-in-out;
   -o-transition: height 1s ease-in-out;
   transition: height 0.5s ease-in-out;
+  transform: ${(props)=>props.isDomestic ? "translate3d(0, 0, 0)" : ""};
 `
 
 const RankingContent = styled.div`
