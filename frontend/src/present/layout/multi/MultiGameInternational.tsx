@@ -79,8 +79,8 @@ export const MultiGameInternational = (props: Props) => {
           <CgArrowsExpandLeft />
         </CustomButton>
       </div>
-      <Timer />
-      <Ranking />
+      <Timer isDomestic={false} />
+      <Ranking isDomestic={true} />
     </div>
   );
 };
