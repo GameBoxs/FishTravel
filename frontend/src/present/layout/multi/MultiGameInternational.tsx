@@ -38,7 +38,6 @@ export const MultiGameInternational = (props: Props) => {
           markerRef.current = new google.maps.Marker({
             map: mapRef.current,
             position: clickedPos,
-            title: "ㅎㅇ"
           })
         }
       })
