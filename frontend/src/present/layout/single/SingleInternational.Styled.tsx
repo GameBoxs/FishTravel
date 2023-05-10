@@ -11,8 +11,8 @@ export const MapWrapper = styled.div`
         outline: none;
     }
     :hover {
-        width: 35%;
-        height: 50%;
+        /* width: 35%; */
+        /* height: 50%; */
         opacity: 1;
     }
     z-index: 100;

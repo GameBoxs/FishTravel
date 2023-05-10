@@ -13,8 +13,9 @@ export const Init = (data:InitType):void => {
     let {selectMarker} = data;
     if(!mapRef.current || !roadRef.current) return;
     const map:google.maps.Map = new google.maps.Map(mapRef.current, {
-        center: new google.maps.LatLng(36.6349, 127.9076),
-        zoom: 1,
+        center: new google.maps.LatLng(14.473029474474735, -11.997194735728957),
+        zoom: 0,
+        minZoom: 0,
         disableDefaultUI: true,
         panControl: false,
         rotateControl: false,

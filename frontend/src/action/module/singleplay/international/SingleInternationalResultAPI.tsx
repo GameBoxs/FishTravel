@@ -16,13 +16,15 @@ export const initMap = (data:ResultInitType) => {
     // 중간 지점을 계산합니다.
     let centerPosition = answerPosition;
     if(selectPosition) {
-        const bounds = new google.maps.LatLngBounds(answerPosition, selectPosition);
-        centerPosition = bounds.getCenter();
+        // const bounds = new google.maps.LatLngBounds(answerPosition, selectPosition);
+        // centerPosition = bounds.getCenter();
+        centerPosition = google.maps.geometry.spherical.interpolate(selectPosition, answerPosition, 0.5);
     }
 
     const map = new google.maps.Map(resultMapRef.current, {
         center: centerPosition,
-        zoom: 1,
+        zoom: 0,
+        minZoom: 0,
         disableDefaultUI: true,
         panControl: false,
         rotateControl: false,

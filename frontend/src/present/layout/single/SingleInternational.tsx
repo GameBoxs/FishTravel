@@ -3,13 +3,14 @@ import * as Style from './SingleInternational.Styled';
 import * as Api from '../../../action/module/singleplay/international/SingleInternationalAPI';
 import FinishBtn from '../../component/single/FinishBtn';
 import CountTimer from '../../component/single/CountTimer';
+import ResultMapGoogle from '../../component/single/ResultMapGoogle';
 
 const SingleInternational = () => {
     const google = window.google;
     const [currentStage, setCurrentStage] = useState(0);
     const [currentState, setCurrentState] = useState(0);
     const [selectPosition, setSelectPosition] = useState<null | google.maps.LatLng>(null);
-    const [timer, setTimer] = useState(6000);
+    const [timer, setTimer] = useState(120);
 
     const mapRef = useRef<HTMLDivElement | null>(null);
     const roadRef = useRef<HTMLDivElement | null>(null);
@@ -37,7 +38,7 @@ const SingleInternational = () => {
     const resetData = () => {
         selectMarker.current?.setMap(null);
         selectMarker.current = null;
-        // setTimer(120);
+        setTimer(120);
         setCurrentStage(currentStage+1);
         setSelectPosition(null);
         mapObject.current = null;
@@ -62,7 +63,7 @@ const SingleInternational = () => {
                     }
                 </Style.ViewWrapper>
                 :
-                null
+                <ResultMapGoogle selectPosition={selectPosition} currentStage={currentStage} startStage={startStage}/>
             }
         </Style.SingleWrapper>
     )
