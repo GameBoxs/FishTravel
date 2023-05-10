@@ -12,7 +12,9 @@ const SingleGamePage = () => {
     const [showMap, setShowMap] = useState(false);
 
     useEffect(() => {
-        if (scriptLoadingState !== 'l' && scriptLoadingState !== 'e' && window.naver) {
+        if (scriptLoadingState !== 'l' && scriptLoadingState !== 'e') {
+            if(locationMod === "domestic" && !window.naver) return;
+            if(locationMod === "international" && !window.google) return;
             setTimeout(() => {
                 setShowMap(true);
             },1500)
