@@ -20,7 +20,7 @@ export const MultiGameResult = ({ isDomestic, isLoaded }: Props) => {
       <ResultContainer>
         <ResultContent>
           <ResultMapContent>
-            <RankingMap id="map" answerPosition={answerPosition} selectedPosition={selectedPosition} />
+            <RankingMap id="map" answerPosition={answerPosition} selectedPosition={selectedPosition} isLoaded={isLoaded} />
           </ResultMapContent>
           <ResultRankingContent>
             <RankingPodium />

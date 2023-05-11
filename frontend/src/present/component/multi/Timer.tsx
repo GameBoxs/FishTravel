@@ -1,11 +1,13 @@
 // @flow 
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useGameSettingStore } from '../../pages/MultiGamePage';
 type Props = {
   isDomestic: boolean
 };
 export const Timer = ({ isDomestic }: Props) => {
   const [time, setTime] = useState(100);
+  const { setGameStage } = useGameSettingStore();
   useEffect(() => { 
     const timer = setInterval(() => {
       setTime((prev) => {
@@ -14,6 +16,11 @@ export const Timer = ({ isDomestic }: Props) => {
     }, 1000);
     return () => clearTimeout(timer);
   }, [])
+  useEffect(() => { 
+    if (time == 0) {
+      setGameStage(3);
+    }
+  },[time])
   return (
     <StyleTimer isDomestic={isDomestic}>
       { Math.floor(time/60) + " : "  + time%60 }
