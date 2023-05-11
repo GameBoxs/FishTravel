@@ -4,6 +4,8 @@ import { CgArrowsExpandLeft } from "react-icons/cg";
 import useLoadScript from "../../../action/hooks/useLoadScript";
 import { Timer } from "../../component/multi/Timer";
 import { Ranking } from "../../component/multi/Ranking";
+import { GrPowerReset } from "react-icons/gr";
+import { useGameSettingStore } from "../../pages/MultiGamePage";
 type Props = {
   isObserver: boolean,
 };
@@ -14,15 +16,20 @@ export const MultiGameInternational = (props: Props) => {
   const controlRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<google.maps.Marker | null>(null);
   const [isExpand, setIsExpand] = useState(false);
+  const initialPosition = useRef<google.maps.LatLng | null>(null);
+  const { setGameStage } = useGameSettingStore();
+  const handleConfirmLocation = () => { 
+    setGameStage(3);
+  }
   useEffect(() => {
     if (isLoaded === "loading") return;
-    const startPos = { lat: 42.345573, lng: -71.098326 };
+    initialPosition.current = new google.maps.LatLng(37.3599605, 127.1058814);
     // 지도 객체 없으면 초기화
     if (mapRef.current === null) { 
       mapRef.current = new google.maps.Map(
         document.getElementById("map") as HTMLElement,
         {
-          center: startPos,
+          center: initialPosition.current ? initialPosition.current : new google.maps.LatLng(33, 128),
           zoom: 14,
           fullscreenControl: false,
           panControl: false,
@@ -50,7 +57,7 @@ export const MultiGameInternational = (props: Props) => {
       panoRef.current = new google.maps.StreetViewPanorama(
         document.getElementById("pano") as HTMLElement,
         {
-          position: startPos,
+          position: initialPosition.current,
           pov: {
             heading: 34,
             pitch: 10,
@@ -78,6 +85,15 @@ export const MultiGameInternational = (props: Props) => {
           <CgArrowsExpandLeft />
         </CustomButton>
       </div>
+      <DecisionButton isExpand={isExpand} isReset={true} onClick={() => {
+        if (initialPosition.current === null) { return; }
+        panoRef.current?.setPosition(initialPosition.current);
+      }}>
+        <GrPowerReset />
+      </DecisionButton>
+      <DecisionButton isExpand={isExpand} isReset={false} onClick={handleConfirmLocation}>
+        결정
+      </DecisionButton>
       <Timer isDomestic={false} />
       <Ranking isDomestic={true} />
     </div>
@@ -104,4 +120,21 @@ const StreetViewContent = styled.div`
 const CustomButton = styled.button`
   border-width: 0px;
   padding: 4px;
+`
+
+const DecisionButton = styled.button<{isExpand: boolean, isReset: boolean}>`
+  position: absolute;
+  width: ${(props) => props.isReset ? (props.isExpand ? "8vw" : "5vw") : (props.isExpand ? "28.8vw" : "18vw")};
+  height: 50px;
+  margin: 1vw;
+  bottom: ${(props) => props.isExpand ? "40vh" : "25vh"};
+  border-radius: 2rem;
+  right: ${(props) => props.isReset ? (props.isExpand ? "29.8vw" : "19vw") : "0"};
+  -webkit-transition: all 1s ease-in-out;
+  -moz-transition: all 1s ease-in-out;
+  -o-transition: all 1s ease-in-out;
+  transition: all 0.5s ease-in-out;
+  transform: translate3d(0, 0, 0);
+  font-size: large;
+  z-index: 999;
 `

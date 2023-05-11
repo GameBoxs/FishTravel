@@ -1,12 +1,16 @@
+import React from "react";
+import { MultiGameDomestic } from "./MultiGameDomestic";
+import { MultiGameInternational } from "./MultiGameInternational";
+
 type Props = {
   isDomestic: boolean
   isLoaded: string
   isObserver: boolean
 };
-export const MultiGameProgress = (props: Props) => {
+export const MultiGameProgress = ({isDomestic, isLoaded, isObserver }: Props) => {
   return (
-    <div>
-      
-    </div>
+    <React.Fragment>
+      {isDomestic ? <MultiGameDomestic isObserver={isObserver} /> : <MultiGameInternational isObserver={isObserver} />}
+    </React.Fragment>
   );
 };
