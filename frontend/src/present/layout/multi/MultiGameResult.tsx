@@ -13,8 +13,8 @@ export type LatLng = {
   lng: number;
 }
 export const MultiGameResult = ({ isDomestic, isLoaded }: Props) => {
-  const [answerPosition, setAnswerPosition] = useState({ lat: 37.3599605, lng: 127.1058814 });
-  const [selectedPosition, setSelectedPosition] = useState({ lat: 37.3599605, lng: 127.1058814 });
+  const [answerPosition, setAnswerPosition] = useState<LatLng>({ lat: 37.3599605, lng: 127.1058814 });
+  const [selectedPosition, setSelectedPosition] = useState<Array<LatLng>>([{ lat: 37.3699605, lng: 127.1058814 },{ lat: 37.3999605, lng: 127.1158814 },{ lat: 37.3499605, lng: 127.1558814 }]);
   return (
     <div>
       <ResultContainer>
