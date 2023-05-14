@@ -5,6 +5,7 @@ import { GrPowerReset } from "react-icons/gr";
 import useLoadScript from "../../../action/hooks/useLoadScript";
 import { Timer } from "../../component/multi/Timer";
 import { Ranking } from "../../component/multi/Ranking";
+import { useGameSettingStore } from "../../pages/MultiGamePage";
 type Props = {
   isObserver: boolean,
 };
@@ -16,6 +17,10 @@ export const MultiGameDomestic = (props: Props) => {
   const markerRef = useRef<naver.maps.Marker | null>(null);
   const [isExpand, setIsExpand] = useState(false);
   const initialPosition = useRef<naver.maps.LatLng | null>(null);
+  const { setGameStage } = useGameSettingStore();
+  const handleConfirmLocation = () => { 
+    setGameStage(3);
+  }
   useEffect(() => {
     // Naver Map API js 파일 로딩 전에는 로직 수행하지 않음.
     if (isLoaded !== "ready") return;
@@ -68,9 +73,6 @@ export const MultiGameDomestic = (props: Props) => {
       });
     }
   }, [isLoaded]);
-  const handleConfirmLocation = () => { 
-
-  }
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative"}}>
       <MapContent id="map" isExpand={isExpand}> 
