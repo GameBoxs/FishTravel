@@ -11,19 +11,15 @@ type TGameSetting = {
   gameStage: number;
   isDomestic: boolean;
   selectedPosition: LatLng;
-  isLoaded: string;
   setGameStage: (value: number) => void;
   setIsDomestic: (value: boolean) => void;
-  setIsLoaded: (value: string) => void;
 }
 export const useGameSettingStore = create<TGameSetting>((set, get) => ({
   gameStage: 2,
-  isDomestic: true,
+  isDomestic: false,
   selectedPosition: { lat: 22, lng: 22 },
-  isLoaded: "loading",
   setGameStage: (value: number) => set((state) => ({...state, gameStage: value})),
   setIsDomestic: (value: boolean) => set((state) => ({ ...state, isDomestic: value })),
-  setIsLoaded: (value: string) => set((state) => ({ ...state, isLoaded: value })),
 }))
 export const MultiGamePage = (props: Props) => {
   //로직
@@ -32,14 +28,14 @@ export const MultiGamePage = (props: Props) => {
   //1-1) 게임에 포함된 사람인지 확인
   //1-2) 게임에 포함된 경우, 죽은 사람 화면 띄워줌
   //2) 게임 
-  const { gameStage, isDomestic, isLoaded, setIsLoaded } = useGameSettingStore();
+  const { gameStage, isDomestic } = useGameSettingStore();
   const isLoadedState = useLoadScript(isDomestic ? "https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=4vgyzjsnlj&submodules=panorama"
     : "https://maps.googleapis.com/maps/api/js?key=AIzaSyC5fl-yV_BZhfIXZYDpU4JnCwFGDhd8oQA");
   console.log(isLoadedState);
   return (
     <div>
       {gameStage === 1 && <MultiGameLoading />}
-      {gameStage === 2 && <MultiGameProgress isDomestic={isDomestic} isLoaded={isLoadedState} isObserver={false} /> }
+      {gameStage === 2 && <MultiGameProgress isDomestic={isDomestic} isLoaded={isLoadedState} isObserver={true} /> }
       {gameStage === 3 && <MultiGameResult isDomestic={isDomestic} isLoaded={isLoadedState} /> }
     </div>
   );
