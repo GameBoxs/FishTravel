@@ -24,7 +24,7 @@ const CircleIcon = styled.div<{profileSrc: string}>`
   width: 5vw;
   height: 5vw;
   border-radius: 2rem;
-  border: 4px solid rgba(255, 255, 255);
+  border: 4px solid rgb(255, 225, 148);
   background-image: ${(props)=>`url(${props.profileSrc})`};
   object-fit: contain;
 `

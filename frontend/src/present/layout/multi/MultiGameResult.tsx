@@ -47,7 +47,7 @@ const ResultContent = styled.div`
   width: 50vw;
   height: 70vh;
   padding: 10px;
-  background: rgba(36,46, 84);
+  background: rgb(76, 76, 109);
   border-radius: 2rem;
   overflow: hidden;
   box-shadow: 9px 10px 98px -22px rgba(0,0,0,0.75);

@@ -47,7 +47,7 @@ export const MultiGameDomestic = (props: Props) => {
         document.getElementById("map") as HTMLElement,
         {
           center: initialPosition.current,
-          zoom: 14,
+          zoom: 1,
           scaleControl: false,
         }
       );
@@ -142,4 +142,6 @@ const DecisionButton = styled.button<{isExpand: boolean, isReset: boolean}>`
   transition: all 0.5s ease-in-out;
   transform: translate3d(0, 0, 0);
   font-size: large;
+  background: rgb(2,0,36);
+  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 50%, rgba(0,212,255,1) 100%);
 `

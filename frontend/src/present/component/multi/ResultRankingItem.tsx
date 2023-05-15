@@ -45,7 +45,7 @@ const IconItem = styled.img`
   max-width: 80px;
   max-height: 60px;
   border-radius: 1rem;
-  border: 4px solid rgba(255, 255, 255);
+  border: 4px solid rgb(255, 225, 148);
 `
 const NicknameText = styled.span`
   color: black;
