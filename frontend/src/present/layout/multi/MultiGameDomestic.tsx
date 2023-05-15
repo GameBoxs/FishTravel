@@ -40,7 +40,6 @@ export const MultiGameDomestic = (props: Props) => {
         panoRef.current?.setVisible(true);
       })
     }
-    console.log(naver.maps.Panorama);
     
     // 지도 객체 없으면 초기화
     if (mapRef.current === null) { 

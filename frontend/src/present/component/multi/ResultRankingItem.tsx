@@ -20,7 +20,7 @@ const ResultRankingItemContainer = styled.div`
   display: flex;
   width: 25vw;
   align-items: center;
-  justify-content: start;
+  justify-content: center;
 `
 
 const ResultRankingItemContent = styled.div`
@@ -30,9 +30,9 @@ const ResultRankingItemContent = styled.div`
   width: 20vw;
   height: 100%;
   min-height: 50px;
-  max-height: 80px;
-  border-radius: 25rem;
-  background-color: white;
+  max-height: 60px;
+  border-radius: 1rem;
+  background-color: rgba(255,255,255,0.8);
   box-shadow: 9px 10px 98px -22px rgba(0,0,0,0.75);
   -webkit-box-shadow: 10px 10px 15px -18px rgba(0,0,0,0.75);
   -moz-box-shadow: 9px 10px 98px -22px rgba(0,0,0,0.75);
@@ -43,8 +43,9 @@ const IconItem = styled.img`
   min-width: 50px;
   min-height: 50px;
   max-width: 80px;
-  max-height: 80px;
-  border-radius: 50%;
+  max-height: 60px;
+  border-radius: 1rem;
+  border: 4px solid rgba(255, 255, 255);
 `
 const NicknameText = styled.span`
   color: black;

@@ -19,5 +19,5 @@ const ResultRankingContainer = styled.div`
   width: 25vw;
   height: 30vh;
   justify-content: center;
-  align-items: center;
+  align-items: end;
 `

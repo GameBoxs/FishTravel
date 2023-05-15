@@ -16,15 +16,14 @@ export const RankingPodiumItem = ({ rank }: Props) => {
 const PodiumItemContainer = styled.div<{ rank: number }>`
   display: grid;
   text-align: center;
-  margin: 0px 1vw;
-  margin-bottom: ${(props) => { return props.rank === 1 ? "75px" : (props.rank === 2 ? "50px" : "25px") }};
+  margin-bottom: ${(props) => { return props.rank === 1 ? "150px" : (props.rank === 2 ? "50px" : "50px") }};
   padding: 8px;
 `
 
 const CircleIcon = styled.div<{profileSrc: string}>`
   width: 5vw;
   height: 5vw;
-  border-radius: 50%;
+  border-radius: 2rem;
   border: 4px solid rgba(255, 255, 255);
   background-image: ${(props)=>`url(${props.profileSrc})`};
   object-fit: contain;

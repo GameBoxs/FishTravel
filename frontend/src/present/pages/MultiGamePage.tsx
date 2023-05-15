@@ -18,7 +18,7 @@ type TGameSetting = {
 }
 export const useGameSettingStore = create<TGameSetting>((set, get) => ({
   gameStage: 2,
-  isDomestic: false,
+  isDomestic: true,
   selectedPosition: { lat: 22, lng: 22 },
   isLoaded: "loading",
   setGameStage: (value: number) => set((state) => ({...state, gameStage: value})),
