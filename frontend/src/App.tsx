@@ -5,6 +5,7 @@ import * as Styled from './App.Styled';
 import SingleGamePage from './present/pages/SingleGamePage';
 import GlobalStyle from './action/GlobalStyle';
 import LandingPage from './present/pages/LandingPage';
+import MainLobbyPage from './present/pages/MainLobbyPage';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <GlobalStyle />
       <Routes>
         <Route path="/" element={<LandingPage />}></Route>
+        <Route path="/mainlobby" element={<MainLobbyPage />}></Route>
         <Route path="/game" element={<Outlet />}>
           <Route index />
           <Route path="single" element={<SingleGamePage />} />

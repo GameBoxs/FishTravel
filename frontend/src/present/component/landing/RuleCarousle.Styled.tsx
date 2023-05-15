@@ -1,20 +1,19 @@
 import styled from 'styled-components';
 
 export const RuleCarousleWrapper = styled.div`
-  max-width: 800px; /* 최대 너비를 800px로 제한 */
+  width: 800px;
   margin: 0 auto; /* 가운데 정렬 */
   padding: 20px; /* 내부 패딩값 조정 */
 
   .carosel {
-    width: 30vw;
-    height: 30vh;
+    width: 100%;
+    height: 100%;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
-    top: 50%;
     left: 50%;
-    transform: translate(-50%, 100%);
+    transform: translate(-50%, 0%);
   }
 
   .next,
@@ -46,7 +45,7 @@ export const RuleCarousleWrapper = styled.div`
 
   img {
     position: absolute;
-    max-width: 30vw;
+    max-width: 40vw;
   }
 
   .refresh {
