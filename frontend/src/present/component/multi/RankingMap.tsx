@@ -9,9 +9,14 @@ type Props = {
   id: string
   isLoaded: string
 };
+
+const answerIconPic = "https://cdn-icons-png.flaticon.com/64/5695/5695118.png";
+const selectedIconPic = "https://cdn-icons-png.flaticon.com/64/5695/5695123.png";
+
 export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Props) => {
   const mapRef = useRef<naver.maps.Map | google.maps.Map | null>(null);
   const markerArrRef = useRef<naver.maps.Marker[] | google.maps.Marker[] | null>(null);
+  const polylineArrRef = useRef<naver.maps.Polyline[] | google.maps.Polyline[] | null>(null);
   const { isDomestic } = useGameSettingStore();
   useEffect(() => { 
     if (isLoaded !== "ready") return; 
@@ -21,12 +26,28 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
         center: new naver.maps.LatLng(36.1146, 128.3645)
       })
       markerArrRef.current = new Array<naver.maps.Marker>;
+      polylineArrRef.current = new Array<naver.maps.Polyline>;
       for (const pos of selectedPosition) { 
         markerArrRef.current?.push(
           new naver.maps.Marker({
             position: new naver.maps.LatLng(pos.lat, pos.lng),
             map: mapRef.current,
-            visible: true
+            visible: true,
+            icon: {
+              url: selectedIconPic,
+              // size: new naver.maps.Size(48, 48), //아이콘 크기
+              scaledSize: new naver.maps.Size(48, 48),
+            },
+            animation: naver.maps.Animation.DROP
+          })
+        )
+        polylineArrRef.current.push(
+          new naver.maps.Polyline({
+            map: mapRef.current,
+            path: [new naver.maps.LatLng(pos.lat, pos.lng), new naver.maps.LatLng(answerPosition.lat, answerPosition.lng)],
+            strokeColor: "#000000",
+            strokeStyle: "shortdash",
+            strokeWeight: 4,
           })
         )
       }
@@ -35,6 +56,10 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
           position: new naver.maps.LatLng(answerPosition.lat, answerPosition.lng),
           map: mapRef.current,
           visible: true,
+          icon: {
+            url: answerIconPic,
+            scaledSize: new naver.maps.Size(40, 40), //아이콘 크기
+          }
         })
       )
       mapRef.current.fitBounds(markerArrRef.current.map((m) => m.getPosition()));
@@ -49,13 +74,43 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
         clickableIcons: false,
       });
       markerArrRef.current = new Array<google.maps.Marker>;
+      polylineArrRef.current = new Array<google.maps.Polyline>;
+      const lineSymbol = {
+        path: "M 0,-1 0,1",
+        strokeOpacity: 1,
+        scale: 4,
+      };
       for (const pos of selectedPosition) { 
         markerArrRef.current?.push(
           new google.maps.Marker({
             position: new google.maps.LatLng(pos.lat, pos.lng),
             map: mapRef.current,
             visible: true,
+            icon: {
+              url: selectedIconPic,
+              scaledSize: new google.maps.Size(40, 40), //아이콘 크기
+              strokeColor: "#000000",
+            },
+            animation: google.maps.Animation.DROP
           })
+        )
+        polylineArrRef.current.push(
+          new google.maps.Polyline(
+            {
+              map: mapRef.current,
+              path: [{ lat: pos.lat, lng: pos.lng }, { lat: answerPosition.lat, lng: answerPosition.lng }],
+              strokeColor: "#000000",
+              strokeOpacity: 0,
+              strokeWeight: 4,
+              icons: [
+                {
+                  icon: lineSymbol,
+                  offset: "0",
+                  repeat: "20px",
+                },
+              ],
+            }
+          )
         )
       }
       markerArrRef.current.push(
@@ -63,6 +118,12 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
           position: new google.maps.LatLng(answerPosition.lat, answerPosition.lng),
           map: mapRef.current,
           visible: true,
+          icon: {
+            url: answerIconPic,
+            scaledSize: new google.maps.Size(40, 40), //아이콘 크기
+            strokeColor: "#000000",
+          },
+          animation: google.maps.Animation.BOUNCE
         })
       )
       const boundary = new google.maps.LatLngBounds();
