@@ -10,6 +10,7 @@ const SingleDomestic = () => {
     const [currentStage, setCurrentStage] = useState(0);
     const [currentState, setCurrentState] = useState(0);
     const [selectPosition, setSelectPosition] = useState<null | naver.maps.LatLng>(null);
+    const [answerPosition, setAnswerPosition] = useState<naver.maps.LatLng>(new naver.maps.LatLng(34.79884360902794, 128.04043980767793));
     const [timer, setTimer] = useState(120);
 
     const mapRef = useRef<HTMLDivElement | null>(null);
@@ -59,7 +60,7 @@ const SingleDomestic = () => {
         setSelectPosition(null);
         mapObject.current = null;
         roadObject.current = null;
-        let data: Api.InitType = {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, selectMarker};
+        let data: Api.InitType = {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, selectMarker, answerPosition};
         Api.Init(data);
     }
     const startStage =() => {
