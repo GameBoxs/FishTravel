@@ -1,5 +1,5 @@
 import styled from "styled-components";
-
+import { motion } from "framer-motion";
 // @flow 
 type Props = {
   
@@ -13,7 +13,7 @@ export const MultiGameLoading = (props: Props) => {
             Round 1
           </RoundCount>
           <MiddleContent>
-
+            <motion.img src="https://static.wikia.nocookie.net/seuss/images/3/35/Parachute_Fish.PNG" alt="" animate={{}} />
           </MiddleContent>
           <FallingMessage>
             XX가 떨어지고 있습니다.
@@ -29,7 +29,10 @@ const Background = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: gray;
+  width: 100vw;
+  height: 100vh;
+  background-color: #4158D0;
+  background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
 `
 const Jumbotron = styled.div`
   width: 50vw;

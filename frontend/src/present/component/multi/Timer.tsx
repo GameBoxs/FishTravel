@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useGameSettingStore } from '../../pages/MultiGamePage';
+import { motion } from "framer-motion";
 type Props = {
   isDomestic: boolean
 };
@@ -20,10 +21,12 @@ export const Timer = ({ isDomestic }: Props) => {
     if (time == 0) {
       setGameStage(3);
     }
-  },[time])
+  }, [time])
+
   return (
     <StyleTimer isDomestic={isDomestic}>
-      { Math.floor(time/60) + " : "  + time%60 }
+      {Math.floor(time / 60) + " : " + time % 60}
+      <CircleStyle animate={{ rotate: 360 }} transition={{repeat: Infinity, duration: 1, ease: "linear"}} />
     </StyleTimer>
   );
 };
@@ -42,4 +45,13 @@ const StyleTimer = styled.div<{isDomestic: boolean}>`
   justify-content: center;
   align-items: center;
   font-size: xx-large;
+`
+
+const CircleStyle = styled(motion.span)`
+  width: 3rem;
+  height: 3rem;
+  border: 0.5rem solid black;
+  border-top: 0.5rem solid white;
+  border-radius: 50%;
+  stroke-dashoffset: 20rem;
 `
