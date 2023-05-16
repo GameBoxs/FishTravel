@@ -16,8 +16,8 @@ type TGameSetting = {
 }
 export const useGameSettingStore = create<TGameSetting>((set, get) => ({
   gameStage: 2,
-  isDomestic: false,
-  selectedPosition: { lat: 22, lng: 22 },
+  isDomestic: true,
+  selectedPosition: { nickname:"나", lat: 22, lng: 22 },
   setGameStage: (value: number) => set((state) => ({...state, gameStage: value})),
   setIsDomestic: (value: boolean) => set((state) => ({ ...state, isDomestic: value })),
 }))
@@ -35,7 +35,7 @@ export const MultiGamePage = (props: Props) => {
   return (
     <div>
       {gameStage === 1 && <MultiGameLoading />}
-      {gameStage === 2 && <MultiGameProgress isDomestic={isDomestic} isLoaded={isLoadedState} isObserver={true} /> }
+      {gameStage === 2 && <MultiGameProgress isDomestic={isDomestic} isLoaded={isLoadedState} isObserver={false} /> }
       {gameStage === 3 && <MultiGameResult isDomestic={isDomestic} isLoaded={isLoadedState} /> }
     </div>
   );

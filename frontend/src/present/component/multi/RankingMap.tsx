@@ -16,6 +16,7 @@ const selectedIconPic = "https://cdn-icons-png.flaticon.com/64/5695/5695123.png"
 export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Props) => {
   const mapRef = useRef<naver.maps.Map | google.maps.Map | null>(null);
   const markerArrRef = useRef<naver.maps.Marker[] | google.maps.Marker[] | null>(null);
+  const infoWindowArrRef = useRef<naver.maps.InfoWindow[] | google.maps.InfoWindow[] | null>(null);
   const polylineArrRef = useRef<naver.maps.Polyline[] | google.maps.Polyline[] | null>(null);
   const { isDomestic } = useGameSettingStore();
   useEffect(() => { 
@@ -27,19 +28,39 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
       })
       markerArrRef.current = new Array<naver.maps.Marker>;
       polylineArrRef.current = new Array<naver.maps.Polyline>;
+      infoWindowArrRef.current = new Array<naver.maps.InfoWindow>;
       for (const pos of selectedPosition) { 
-        markerArrRef.current?.push(
-          new naver.maps.Marker({
-            position: new naver.maps.LatLng(pos.lat, pos.lng),
-            map: mapRef.current,
-            visible: true,
-            icon: {
-              url: selectedIconPic,
-              // size: new naver.maps.Size(48, 48), //아이콘 크기
-              scaledSize: new naver.maps.Size(48, 48),
-            },
-            animation: naver.maps.Animation.DROP
-          })
+        const marker = new naver.maps.Marker({
+          position: new naver.maps.LatLng(pos.lat, pos.lng),
+          map: mapRef.current,
+          visible: true,
+          icon: {
+            url: selectedIconPic,
+            // size: new naver.maps.Size(48, 48), //아이콘 크기
+            scaledSize: new naver.maps.Size(48, 48),
+          },
+          animation: naver.maps.Animation.DROP
+        })
+        const info = new naver.maps.InfoWindow({
+          content: `
+          <div style="padding: 8px; border: 2px solid black; border-radius: 2rem; text-align: center;">
+            <h3>${pos.nickname}</h3>
+            <h3>${pos.lat}</h3>
+          </div>
+          `,
+          borderWidth: 0,
+        })
+        marker.addListener("mouseover", () => { 
+          if (mapRef.current && mapRef.current instanceof naver.maps.Map && marker instanceof naver.maps.Marker) { 
+            info.open(mapRef.current, marker);
+          }
+        })
+        marker.addListener("mouseout", () => {
+          if (info.getMap()) info.close();
+        })
+        markerArrRef.current?.push(marker)
+        infoWindowArrRef.current.push(
+        
         )
         polylineArrRef.current.push(
           new naver.maps.Polyline({
@@ -75,6 +96,7 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
       });
       markerArrRef.current = new Array<google.maps.Marker>;
       polylineArrRef.current = new Array<google.maps.Polyline>;
+      infoWindowArrRef.current = new Array<google.maps.InfoWindow>;
       const lineSymbol = {
         path: "M 0,-1 0,1",
         strokeOpacity: 1,
@@ -94,6 +116,9 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
             animation: google.maps.Animation.DROP
           })
         )
+        markerArrRef.current.at(-1)?.addListener("click", () => { 
+
+        })
         polylineArrRef.current.push(
           new google.maps.Polyline(
             {
@@ -134,7 +159,6 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
     }
     console.log(mapRef.current);
   }, [isLoaded])
-
   return (
     <RankingMapContainer id={id}>
       
@@ -151,3 +175,4 @@ const RankingMapContainer = styled.div`
   justify-content: center; 
   border-radius: 2rem 2rem 0 0;
 `
+const InfowindowContainer = "";
