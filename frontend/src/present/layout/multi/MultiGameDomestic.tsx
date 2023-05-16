@@ -188,6 +188,7 @@ const DecisionButton = styled.button<{isExpand: boolean, isReset: boolean}>`
   height: 50px;
   margin: 1vw;
   bottom: ${(props) => props.isExpand ? "40vh" : "25vh"};
+  border: none;
   border-radius: 2rem;
   right: ${(props) => props.isReset ? (props.isExpand ? "29.8vw" : "19vw") : "0"};
   -webkit-transition: all 1s ease-in-out;
@@ -196,4 +197,7 @@ const DecisionButton = styled.button<{isExpand: boolean, isReset: boolean}>`
   transition: all 0.5s ease-in-out;
   transform: translate3d(0, 0, 0);
   font-size: large;
+  font-weight: bold;
+  background: ${(props) => props.isReset ? "#4681f4" : "#33b249"};
+  color: white;
 `

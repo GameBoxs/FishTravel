@@ -4,6 +4,7 @@ import { MultiGameLoading } from '../layout/multi/MultiGameLoading';
 import { LatLng, MultiGameResult } from '../layout/multi/MultiGameResult';
 import useLoadScript from '../../action/hooks/useLoadScript';
 import { MultiGameProgress } from '../layout/multi/MultiGameProgress';
+import { MultiGameLobby } from '../layout/multi/MultiGameLobby';
 type Props = {
   
 };
@@ -34,6 +35,7 @@ export const MultiGamePage = (props: Props) => {
   console.log(isLoadedState);
   return (
     <div>
+      {gameStage === 0 && <MultiGameLobby />}
       {gameStage === 1 && <MultiGameLoading />}
       {gameStage === 2 && <MultiGameProgress isDomestic={isDomestic} isLoaded={isLoadedState} isObserver={false} /> }
       {gameStage === 3 && <MultiGameResult isDomestic={isDomestic} isLoaded={isLoadedState} /> }
