@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
+import { LoadingIndicator } from "../../component/multi/LoadingIndicator";
 import { RankingMap } from "../../component/multi/RankingMap";
 import { RankingPodium } from "../../component/multi/RankingPodium";
 import { ResultRankingItemList } from "../../component/multi/ResultRankingItemList";
@@ -9,12 +10,13 @@ type Props = {
   isLoaded: string;
 };
 export type LatLng = {
+  nickname: string;
   lat: number;
   lng: number;
 }
 export const MultiGameResult = ({ isDomestic, isLoaded }: Props) => {
-  const [answerPosition, setAnswerPosition] = useState<LatLng>({ lat: 37.3599605, lng: 127.1058814 });
-  const [selectedPosition, setSelectedPosition] = useState<Array<LatLng>>([{ lat: 37.3699605, lng: 127.1058814 },{ lat: 37.3999605, lng: 127.1158814 },{ lat: 37.3499605, lng: 127.1558814 }]);
+  const [answerPosition, setAnswerPosition] = useState<LatLng>({ nickname:"김덕배", lat: 37.3599605, lng: 127.1058814 });
+  const [selectedPosition, setSelectedPosition] = useState<Array<LatLng>>([{ nickname:"김덕배", lat: 37.3699605, lng: 127.1058814 },{ nickname:"이창민", lat: 37.3999605, lng: 127.1158814 },{ nickname:"임수민", lat: 37.3499605, lng: 127.1558814 }]);
   return (
     <div>
       <ResultContainer>
@@ -27,6 +29,12 @@ export const MultiGameResult = ({ isDomestic, isLoaded }: Props) => {
             <ResultRankingItemList />
           </ResultRankingContent>
         </ResultContent>
+        <LoadingIndicatorContainer>
+          <LoadingIndicatorText>
+            다음 라운드를 로딩중입니다...
+          </LoadingIndicatorText>
+          <LoadingIndicator />
+        </LoadingIndicatorContainer>
       </ResultContainer>
     </div>
   );
@@ -41,7 +49,7 @@ const ResultContainer = styled.div`
 
 const ResultContent = styled.div`
   position: absolute;
-  top: 50%;
+  top: 40%;
   left: 50%;
   transform: translateX(-50%) translatey(-50%);
   width: 50vw;
@@ -68,4 +76,18 @@ const ResultRankingContent = styled.div`
   justify-content: space-between;
   height: 50%;
   bottom: 0;
+`
+
+const LoadingIndicatorContainer = styled.div`
+  display: grid;
+ position: absolute;
+ bottom: 5%;
+ left: 50%;
+ transform: translateX(-50%);
+`
+const LoadingIndicatorText = styled.div`
+  background: rgba(255, 255, 255, 0.5);
+  font-size: large;
+  padding: 8px;
+  border-radius: 2rem;
 `
