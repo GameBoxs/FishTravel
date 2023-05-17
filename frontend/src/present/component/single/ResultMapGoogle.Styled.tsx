@@ -7,7 +7,8 @@ export const ResultNextBtn = styled.div`
     background-image: linear-gradient(43deg, #33ff00 0%, #00b7ff 46%, #c8ff00 100%);
     border-radius: 50px;
     position: relative;
-    top: 50%;
+    top: 90%;
+    /* bottom: 0%; */
     left: 44%;
     text-align: center;
     line-height: 35px;
