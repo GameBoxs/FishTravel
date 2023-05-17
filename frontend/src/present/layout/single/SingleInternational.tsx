@@ -19,10 +19,12 @@ const SingleInternational = () => {
     const roadObject = useRef<null | google.maps.StreetViewPanorama>(null);
     let selectMarker = useRef<null | google.maps.Marker>(null);
     let answerMarker = useRef<null | google.maps.Marker>(null);
+    let idxArr = useRef([-1, -1, -1]);
 
     useEffect(() => {
         if(currentState == 0) {
-            resetData();
+            let tempLatLng = changeAnswerPosition();
+            resetData(tempLatLng);
         }
     },[currentState])
 
@@ -36,7 +38,7 @@ const SingleInternational = () => {
         setTimer(0);
         setCurrentState(1);
     }
-    const resetData = () => {
+    const resetData = (answerPosition:google.maps.LatLng) => {
         selectMarker.current?.setMap(null);
         selectMarker.current = null;
         setTimer(120);
@@ -44,11 +46,24 @@ const SingleInternational = () => {
         setSelectPosition(null);
         mapObject.current = null;
         roadObject.current = null;
-        let data: Api.InitType = {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, selectMarker};
+        let data: Api.InitType = {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, selectMarker, answerPosition};
         Api.Init(data);
     }
     const startStage =() => {
         setCurrentState(0);
+    }
+    const changeAnswerPosition = () => {
+        let dataSetSize = Api.getDataSetSize();
+        let randomIdx = Math.floor(Math.random() * dataSetSize);
+        while(true) {
+            if(idxArr.current.indexOf(randomIdx) === -1) {
+                break;
+            }
+            randomIdx = Math.floor(Math.random() * dataSetSize);
+        }
+        setAnswerPosition(Api.getDataSet(randomIdx));
+        idxArr.current[currentStage] = randomIdx;
+        return Api.getDataSet(randomIdx);
     }
     
     return (
