@@ -26,7 +26,7 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
     if (e.key == 'Enter') {
       console.log(chatRef.current?.value);
       chatRef.current!.value = '';
-     }
+    }
   }
   useEffect(() => {
     // Naver Map API js 파일 로딩 전에는 로직 수행하지 않음.
@@ -45,6 +45,19 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
       }
     }
     else { 
+      if (naver.maps.Panorama) { 
+        panoRef.current = new naver.maps.Panorama(
+          document.getElementById("pano") as HTMLElement,
+          {
+            position: initialPosition.current ? initialPosition.current : new naver.maps.LatLng(33, 128),
+            flightSpot: false,
+          }
+        );
+        // 파노라마 객체 초기화 이벤트 트리거되면, visible 하도록 설정.
+        naver.maps.Event.addListener(panoRef.current, "init", () => { 
+          panoRef.current?.setVisible(true);
+        })
+      }
       // submodule 포함해서 js 파일 다 로딩되었으면 파노라마 객체 초기화 하도록 설정.
       (naver.maps as any).onJSContentLoaded = () => { 
         // 파노라마(스트리트 뷰) 객체 초기화
