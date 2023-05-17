@@ -1,7 +1,6 @@
 package com.carassius.fallenfish.domain.game.dto;
 
 import com.carassius.fallenfish.domain.game.entity.GameStatus;
-import com.carassius.fallenfish.domain.member.entity.Member;
 import lombok.*;
 
 import java.util.List;
