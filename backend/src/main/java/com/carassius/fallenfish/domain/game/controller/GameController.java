@@ -48,7 +48,7 @@ public class GameController {
     public void pubEnter(@Payload PlayerRequest playerRequest, @DestinationVariable String roomId) throws JsonProcessingException {
         GameInfo gameInfo = gameService.enterGameRoom(playerRequest, roomId);
         if(gameInfo != null) {
-            simpMessageSendingOperations.convertAndSend("/topic/" + roomId, playerRequest);
+            simpMessageSendingOperations.convertAndSend("/topic/" + roomId, gameInfo);
         }
     }
 
