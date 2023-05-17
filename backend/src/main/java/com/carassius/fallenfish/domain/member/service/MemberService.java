@@ -28,6 +28,7 @@ public class MemberService {
             .name(findMember.getName())
             .build();
     }
+
     @Transactional
     public Member createMember(MemberCreateRequest dto) {
         Member user = Member.builder()
