@@ -10,7 +10,7 @@ const SingleDomestic = () => {
     const [currentStage, setCurrentStage] = useState(0);
     const [currentState, setCurrentState] = useState(0);
     const [selectPosition, setSelectPosition] = useState<null | naver.maps.LatLng>(null);
-    const [answerPosition, setAnswerPosition] = useState<naver.maps.LatLng>(new naver.maps.LatLng(34.79884360902794, 128.04043980767793));
+    const [answerPosition, setAnswerPosition] = useState<naver.maps.LatLng>(new naver.maps.LatLng(36.48800827917877, 126.3337966701461));
     const [timer, setTimer] = useState(120);
 
     const mapRef = useRef<HTMLDivElement | null>(null);
@@ -79,7 +79,7 @@ const SingleDomestic = () => {
                         selectPosition ? <FinishBtn finishStage={finishStage} /> : null
                     }
                 </Style.ViewWrapper>
-                :<ResultMap selectPosition={selectPosition} currentStage={currentStage} startStage={startStage}/>
+                :<ResultMap selectPosition={selectPosition} currentStage={currentStage} startStage={startStage} answerPosition={answerPosition}/>
             }
         </Style.SingleWrapper>
     )

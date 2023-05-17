@@ -5,16 +5,17 @@ import * as Api from "../../../action/module/singleplay/domestic/SingleDomesticR
 
 type propsType = {
     selectPosition: naver.maps.LatLng | null;
+    answerPosition: naver.maps.LatLng;
     currentStage: number;
     startStage: () => void;
 }
 
 const ResultMap = (props:propsType) => {
-    const {currentStage, selectPosition, startStage} = props;
+    const {currentStage, selectPosition, startStage, answerPosition} = props;
     const moveNavigation = useNavigate();
     
-    const [answerPosition, setAnswerPosition] = useState<null | naver.maps.LatLng>(new naver.maps.LatLng(36.1073, 128.4175));
-    const [distancePoint, setDistancePoint] = useState(0);
+    const [distancePoint, setDistancePoint] = useState("");
+    const [distanceUnit, setDistanceUinit] = useState(" M");
 
     const resultMapRef = useRef<HTMLDivElement | null>(null);
     const resultMapObject = useRef<naver.maps.Map | null>(null);
@@ -26,8 +27,15 @@ const ResultMap = (props:propsType) => {
     },[]);
 
     const makeMarker = (initDatas:Api.ResultInitReturnType) => {
-        setDistancePoint(Math.trunc(initDatas.distancePoint));
-        console.log(initDatas.resultMapObject.current);
+        let tempDistance = Math.trunc(initDatas.distancePoint);
+        if(Math.trunc(tempDistance / 1000) > 0) {
+            tempDistance = tempDistance/1000;
+            setDistancePoint(tempDistance.toFixed(2));
+            setDistanceUinit(" KM");
+        } else {
+            setDistancePoint(Math.trunc(initDatas.distancePoint).toString());
+            setDistanceUinit(" M");
+        }
         resultMapObject.current = initDatas.resultMapObject.current ? initDatas.resultMapObject.current : null;
         Api.makeMarker({selectPosition, answerPosition, resultMapObject});
     }
@@ -43,7 +51,7 @@ const ResultMap = (props:propsType) => {
             <Style.ResultInfo>
                 <Style.ResultText>떨어진 거리</Style.ResultText>
                 <Style.ResultText>Score</Style.ResultText>
-                <Style.ResultText>{distancePoint}M</Style.ResultText>
+                <Style.ResultText>{distancePoint}{distanceUnit}</Style.ResultText>
                 <Style.ResultText>4</Style.ResultText>
             </Style.ResultInfo>
             {

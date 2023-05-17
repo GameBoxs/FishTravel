@@ -10,6 +10,7 @@ const SingleInternational = () => {
     const [currentStage, setCurrentStage] = useState(0);
     const [currentState, setCurrentState] = useState(0);
     const [selectPosition, setSelectPosition] = useState<null | google.maps.LatLng>(null);
+    const [answerPosition, setAnswerPosition] = useState<google.maps.LatLng>(new google.maps.LatLng(36.48800827917877, 126.3337966701461));
     const [timer, setTimer] = useState(120);
 
     const mapRef = useRef<HTMLDivElement | null>(null);
@@ -63,7 +64,7 @@ const SingleInternational = () => {
                     }
                 </Style.ViewWrapper>
                 :
-                <ResultMapGoogle selectPosition={selectPosition} currentStage={currentStage} startStage={startStage}/>
+                <ResultMapGoogle selectPosition={selectPosition} currentStage={currentStage} startStage={startStage} answerPosition={answerPosition}/>
             }
         </Style.SingleWrapper>
     )
