@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import useLoadScript from "../../action/hooks/useLoadScript";
 
 import SingleDomestic from "../layout/single/SingleDomestic";
+import SingleInternational from "../layout/single/SingleInternational";
 
 const SingleGamePage = () => {
     // let locationMod = "international";
@@ -12,7 +13,9 @@ const SingleGamePage = () => {
     const [showMap, setShowMap] = useState(false);
 
     useEffect(() => {
-        if (scriptLoadingState !== 'l' && scriptLoadingState !== 'e' && window.naver) {
+        if (scriptLoadingState !== 'l' && scriptLoadingState !== 'e') {
+            if(locationMod === "domestic" && !window.naver) return;
+            if(locationMod === "international" && !window.google) return;
             setTimeout(() => {
                 setShowMap(true);
             },1500)
@@ -22,7 +25,7 @@ const SingleGamePage = () => {
     return (
         <React.Fragment>
             {
-                showMap ? (locationMod === 'domestic' ? <SingleDomestic /> : <SingleDomestic />) : <h1>로딩중...</h1>
+                showMap ? (locationMod === 'domestic' ? <SingleDomestic /> : <SingleInternational />) : <h1>로딩중...</h1>
             }
         </React.Fragment>
     )

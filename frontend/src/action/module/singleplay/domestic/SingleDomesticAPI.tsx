@@ -6,10 +6,11 @@ export type InitType = {
     selectPosition: naver.maps.LatLng | null;
     setSelectPosition: React.Dispatch<React.SetStateAction<naver.maps.LatLng | null>>;
     selectMarker: React.MutableRefObject<naver.maps.Marker | null>;
+    answerPosition: naver.maps.LatLng;
 }
 
 export const Init = (data:InitType):void => {
-    const {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition} = data;
+    const {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, answerPosition} = data;
     let {selectMarker} = data;
     if(!mapRef.current || !roadRef.current) return;
     const map:naver.maps.Map = new naver.maps.Map(mapRef.current, {
@@ -22,8 +23,10 @@ export const Init = (data:InitType):void => {
         tileSpare: 5,
     });
     const pano = new naver.maps.Panorama(roadRef.current, {
-        position: new naver.maps.LatLng(36.1073, 128.4175),
+        // position: new naver.maps.LatLng(36.1073, 128.4175),
+        position: answerPosition,
         aroundControl: false,
+        flightSpot: false,
     })
     mapObject.current = map;
     roadObject.current = pano;

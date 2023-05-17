@@ -1,24 +1,25 @@
 import React, {useEffect, useRef, useState} from "react";
 import { useNavigate } from "react-router-dom";
-import * as Style from "./ResultMap.Styled";
-import * as Api from "../../../action/module/singleplay/domestic/SingleDomesticResultAPI";
+import * as Style from "./ResultMapGoogle.Styled";
+import * as Api from "../../../action/module/singleplay/international/SingleInternationalResultAPI";
 
 type propsType = {
-    selectPosition: naver.maps.LatLng | null;
-    answerPosition: naver.maps.LatLng;
+    selectPosition: google.maps.LatLng | null;
+    answerPosition: google.maps.LatLng;
     currentStage: number;
     startStage: () => void;
 }
 
-const ResultMap = (props:propsType) => {
-    const {currentStage, selectPosition, startStage, answerPosition} = props;
+const ResultMapGoogle = (props:propsType) => {
+    const {currentStage, selectPosition, startStage} = props;
     const moveNavigation = useNavigate();
     
+    const [answerPosition, setAnswerPosition] = useState<null | google.maps.LatLng>(new google.maps.LatLng(36.1073, 128.4175));
     const [distancePoint, setDistancePoint] = useState("");
     const [distanceUnit, setDistanceUinit] = useState(" M");
 
     const resultMapRef = useRef<HTMLDivElement | null>(null);
-    const resultMapObject = useRef<naver.maps.Map | null>(null);
+    const resultMapObject = useRef<google.maps.Map | null>(null);
     
     useEffect(() => {
         let data:Api.ResultInitType = {resultMapRef, answerPosition, selectPosition, resultMapObject};
@@ -51,7 +52,7 @@ const ResultMap = (props:propsType) => {
             <Style.ResultInfo>
                 <Style.ResultText>떨어진 거리</Style.ResultText>
                 <Style.ResultText>Score</Style.ResultText>
-                <Style.ResultText>{distancePoint}{distanceUnit}</Style.ResultText>
+                <Style.ResultText>{distancePoint}M</Style.ResultText>
                 <Style.ResultText>4</Style.ResultText>
             </Style.ResultInfo>
             {
@@ -65,4 +66,4 @@ const ResultMap = (props:propsType) => {
     )
 }
 
-export default ResultMap;
+export default ResultMapGoogle;
