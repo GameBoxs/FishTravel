@@ -6,5 +6,5 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PlayerRequest{
-    private Long requesterId;
+    private Player requester;
 }
