@@ -56,6 +56,8 @@ public class GameService {
         gameInfo.setCode(MessageCode.LOBBY);
         gameInfo.setManagerId(managerId);
         gameInfo.setMaxPlayers(6);
+        // TODO: 국내 고정
+        gameInfo.setDomestic(true);
         List<Player> players = new ArrayList<>();
         gameInfo.setPlayers(players);
 
