@@ -1,11 +1,9 @@
 package com.carassius.fallenfish.domain.member.service;
 
-import com.carassius.fallenfish.common.exception.ResourceNotFoundException;
 import com.carassius.fallenfish.domain.member.dto.MemberCreateRequest;
-import com.carassius.fallenfish.domain.member.dto.MemberInfoResponse;
+import com.carassius.fallenfish.domain.member.dto.MemberInfo;
 import com.carassius.fallenfish.domain.member.entity.Member;
 import com.carassius.fallenfish.domain.member.repository.MemberRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,16 +20,13 @@ public class MemberService {
 
 
     @Transactional
-    public MemberInfoResponse getMember(Long userId) {
+    public MemberInfo getMember(Long userId) {
         Member findMember = memberRepository.findById(userId).get();
 
-        MemberInfoResponse memberInfoResponse =
-            MemberInfoResponse.builder()
-                .loginId(findMember.getLoginId())
-                .name(findMember.getName())
-                .build();
-
-        return memberInfoResponse;
+        return MemberInfo.builder()
+            .id(findMember.getId())
+            .name(findMember.getName())
+            .build();
     }
     @Transactional
     public Member createMember(MemberCreateRequest dto) {
