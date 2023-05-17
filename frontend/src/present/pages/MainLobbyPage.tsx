@@ -5,16 +5,16 @@ import { useUserStore } from '../../store/userStore';
 
 const MainLobbyPage = () => {
   const name = useUserStore((state) => state.name);
-  var userId = useUserStore((state) => state.userId);
+  const id = useUserStore((state) => state.id);
 
   useEffect(() => {
-    console.log(name, userId);
-  }, []);
+    if (name != null && id != null) {
+      console.log(name, id);
+    }
+  }, [name]);
 
   return (
     <>
-      <h1>{name}</h1>
-      <h2>{userId}</h2>
       <div style={{ height: '40%' }}>
         <TitleSection />
       </div>
