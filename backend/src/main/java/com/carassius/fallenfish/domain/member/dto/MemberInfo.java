@@ -11,8 +11,8 @@ import lombok.Setter;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberInfoResponse {
-    private String loginId;
+public class MemberInfo {
+    private Long id;
     private String name;
     // private String profileImage;
 }
