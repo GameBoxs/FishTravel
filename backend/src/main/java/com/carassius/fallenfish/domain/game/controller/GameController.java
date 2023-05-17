@@ -62,4 +62,30 @@ public class GameController {
         simpMessageSendingOperations.convertAndSend("/topic/" + roomId, broadcastMessage);
     }
 
+    @MessageMapping("/room/{roomId}/start")
+    synchronized public void pubStart(@DestinationVariable String roomId) throws JsonProcessingException, InterruptedException {
+        GameInfo gameInfo = gameService.startGame(roomId);
+        BroadcastMessage<GameInfo> broadcastMessage = BroadcastMessage.<GameInfo>builder()
+                .code(MessageCode.GAME_START)
+                .data(gameInfo)
+                .build();
+        simpMessageSendingOperations.convertAndSend("/topic/" + roomId, broadcastMessage);
+
+        wait(5000);
+
+        gameInfo = gameService.pickFish(roomId);
+        broadcastMessage = BroadcastMessage.<GameInfo>builder()
+                .code(MessageCode.PICK_FISH)
+                .data(gameInfo)
+                .build();
+        simpMessageSendingOperations.convertAndSend("/topic/" + roomId, broadcastMessage);
+
+        wait(5000);
+    }
+
+    @MessageMapping("/room/{roomId}/pickfish")
+    public void pubPickfish(@Payload MarkerRequest markerRequest, @DestinationVariable String roomId) {
+
+    }
+
 }

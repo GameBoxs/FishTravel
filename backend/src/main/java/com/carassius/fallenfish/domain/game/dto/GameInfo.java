@@ -16,5 +16,5 @@ public class GameInfo {
     private Long managerId;
     private int maxPlayers;
     private List<Player> players;
-    private List<Round> round;
+    private RoundInfo[] rounds;
 }
