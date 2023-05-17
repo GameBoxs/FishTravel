@@ -84,9 +84,40 @@ public class GameService {
         return gameInfo;
     }
 
-    public GameInfo pickFish(String roomId) throws JsonProcessingException {
+    public GameInfo startPickFish(String roomId) throws JsonProcessingException {
         GameInfo gameInfo = getRedisValue(roomId, GameInfo.class);
         gameInfo.setCode(MessageCode.PICK_FISH);
+        setRedisValue(roomId, gameInfo);
+        return gameInfo;
+    }
+
+    public void pickFish(MarkerRequest markerRequest, String roomId) throws JsonProcessingException {
+        String key = "member_" + markerRequest.getRequester().getId();
+        PlayerInfo playerInfo = getRedisValue(key, PlayerInfo.class);
+        playerInfo.setProblemMarker(markerRequest);
+        setRedisValue(key, playerInfo);
+    }
+
+    public GameInfo waitForNextRound(String roomId) throws JsonProcessingException {
+        GameInfo gameInfo = getRedisValue(roomId, GameInfo.class);
+        gameInfo.setCode(MessageCode.WAIT_FOR_NEXT_ROUND);
+        setRedisValue(roomId, gameInfo);
+        return gameInfo;
+    }
+
+    public MarkerRequest startRound(String roomId, int i) throws JsonProcessingException {
+        GameInfo gameInfo = getRedisValue(roomId, GameInfo.class);
+        gameInfo.setCode(MessageCode.IN_ROUND);
+        setRedisValue(roomId, gameInfo);
+
+        Player player = gameInfo.getPlayers().get(i);
+        PlayerInfo playerInfo = getRedisValue("member_" + player.getId(), PlayerInfo.class);
+        return playerInfo.getProblemMarker();
+    }
+
+    public GameInfo endRound(String roomId) throws JsonProcessingException {
+        GameInfo gameInfo = getRedisValue(roomId, GameInfo.class);
+        gameInfo.setCode(MessageCode.ROUND_RESULT);
         setRedisValue(roomId, gameInfo);
         return gameInfo;
     }
