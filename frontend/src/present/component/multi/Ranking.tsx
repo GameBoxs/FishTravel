@@ -32,12 +32,16 @@ const list = [
     memberId: "강김최",
     score: 70,
   },
+  {
+    ranking: 5,
+    memberId: "강김최",
+    score: 70,
+  },
 ]
 export const Ranking = ({isDomestic}: Props) => {
   const [isExpand, setIsExpand] = useState(false);
   return (
     <RankingContainer isExpand={isExpand} isDomestic={isDomestic}>
-      <p>순위</p>
       <RankingContent>
         {isExpand ? list.map((ranking) => <RankingItem item={ranking} />)
           : <RankingItem item={list[0]} />
@@ -57,7 +61,7 @@ const RankingContainer = styled.div<{ isExpand: boolean, isDomestic: boolean}>`
   top: 1vw;
   width: 15vw;
   height: ${(props)=>props.isExpand ? "40vh" : "10vh"};
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 1);
   border-radius: 1rem;
   overflow: hidden;
   z-index: 20;
@@ -70,14 +74,17 @@ const RankingContainer = styled.div<{ isExpand: boolean, isDomestic: boolean}>`
 `
 
 const RankingContent = styled.div`
-  display: grid;
+  display: flex;
+  flex-direction: column;
   padding: 8px;
+  height: calc(100% - 2vh - 24px);
   width: calc(100% - 16px);
 `
 const RankingCollapseButton = styled.button`
-  background: white;
+  background: rgba(244, 244, 244, 1);
   border: none;
   width: 100%;
+  height: 2vh;
   padding: 2px;
   border-radius: 0.25rem;
 `

@@ -9,20 +9,46 @@ type Props = {
 };
 export const RankingItem = ({ item }: Props) => {
   return (
-    <RnakingItemContainer>
-      <span style={{flex: 1}}>{item.ranking}</span>
-      <span style={{ flex: 3, overflow: "hidden"}}>{item.memberId}</span>
-      <span style={{ flex:1}}>{item.score}</span>
-    </RnakingItemContainer>
+    <RankingItemContainer>
+      <div style={{ flex: 1}}>{item.ranking}</div>
+      <div style={{ flex: 1}}>
+        <RankingIcon src="https://cdn-icons-png.flaticon.com/128/149/149071.png" alt="" />
+      </div>
+      <div style={{ flex: 3, overflow: "hidden", display: "flex", }}>
+        <RankingTextContainer>
+          <RankingUserText>{item.memberId}</RankingUserText>
+          <RankingScoreText>{item.score}</RankingScoreText>
+        </RankingTextContainer>
+      </div>
+    </RankingItemContainer>
   );
 };
 
-const RnakingItemContainer = styled.div`
+const RankingItemContainer = styled.div`
   display: flex;
+  flex: 1;
+  align-items: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   justify-content: space-between;
   width: 100%;
+  height: 44px;
   font-size: large;
+  border-radius: 1rem;
+  margin: 4px 0px;
+  background-color: rgba(0, 0, 255, 0.05);
+`
+const RankingIcon = styled.img`
+  width: 100%;
+`
+const RankingTextContainer = styled.div`
+  display: grid;
+  margin-left: 4px;
+`
+const RankingUserText = styled.span`
+`
+const RankingScoreText = styled.span`
+  font-size: small;
+  text-align: left;
 `
