@@ -5,18 +5,22 @@ import { LatLng, MultiGameResult } from '../layout/multi/MultiGameResult';
 import useLoadScript from '../../action/hooks/useLoadScript';
 import { MultiGameProgress } from '../layout/multi/MultiGameProgress';
 import { MultiGameLobby } from '../layout/multi/MultiGameLobby';
+import { MultiGamePicker } from '../layout/multi/MultiGamePicker';
+import { TGameInfo } from '.';
 type Props = {
   
 };
 type TGameSetting = {
+  gameInfo: TGameInfo,
   gameStage: number;
   isDomestic: boolean;
   selectedPosition: LatLng;
   setGameStage: (value: number) => void;
   setIsDomestic: (value: boolean) => void;
 }
+
 export const useGameSettingStore = create<TGameSetting>((set, get) => ({
-  gameStage: 2,
+  gameStage: 1,
   isDomestic: true,
   selectedPosition: { nickname:"나", lat: 22, lng: 22 },
   setGameStage: (value: number) => set((state) => ({...state, gameStage: value})),
@@ -35,10 +39,11 @@ export const MultiGamePage = (props: Props) => {
   console.log(isLoadedState);
   return (
     <div>
-      {gameStage === 0 && <MultiGameLobby />}
-      {gameStage === 1 && <MultiGameLoading />}
-      {gameStage === 2 && <MultiGameProgress isDomestic={isDomestic} isLoaded={isLoadedState} isObserver={false} /> }
-      {gameStage === 3 && <MultiGameResult isDomestic={isDomestic} isLoaded={isLoadedState} /> }
+      {gameStage === 0 && <MultiGameLobby/>}
+      {gameStage === 1 && <MultiGamePicker isLoaded={isLoadedState} />}
+      {gameStage === 2 && <MultiGameLoading />}
+      {gameStage === 3 && <MultiGameProgress isDomestic={isDomestic} isLoaded={isLoadedState} isObserver={false} /> }
+      {gameStage === 4 && <MultiGameResult isDomestic={isDomestic} isLoaded={isLoadedState} /> }
     </div>
   );
 };
