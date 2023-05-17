@@ -1,7 +1,7 @@
 package com.carassius.fallenfish.domain.game.controller;
 
-import com.carassius.fallenfish.domain.game.dto.GameInfo;
-import com.carassius.fallenfish.domain.game.dto.PlayerRequest;
+import com.carassius.fallenfish.domain.game.dto.*;
+import com.carassius.fallenfish.domain.game.entity.MessageCode;
 import com.carassius.fallenfish.domain.game.service.GameService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,10 +26,6 @@ public class GameController {
     private final ObjectMapper objectMapper;
     private final GameService gameService;
 
-    public void setRedisValue(String key, Object classType) throws JsonProcessingException {
-        redisTemplate.opsForValue().set(key, objectMapper.writeValueAsString(classType));
-    }
-
     // 방 생성하기 - RabbitMQ에 사용할 방 랜덤ID를 생성해서 방장에게 전달한다.
     @GetMapping("/room/create")
     public ResponseEntity<?> createGameRoom() throws JsonProcessingException {
@@ -47,15 +43,23 @@ public class GameController {
     @MessageMapping("room/{roomId}/enter")
     public void pubEnter(@Payload PlayerRequest playerRequest, @DestinationVariable String roomId) throws JsonProcessingException {
         GameInfo gameInfo = gameService.enterGameRoom(playerRequest, roomId);
+        BroadcastMessage<GameInfo> broadcastMessage = BroadcastMessage.<GameInfo>builder()
+                .code(MessageCode.ENTER)
+                .data(gameInfo)
+                .build();
         if(gameInfo != null) {
-            simpMessageSendingOperations.convertAndSend("/topic/" + roomId, gameInfo);
+            simpMessageSendingOperations.convertAndSend("/topic/" + roomId, broadcastMessage);
         }
     }
 
     @MessageMapping("room/{roomId}/chat")
-    public void pubChat(@Payload String message, @DestinationVariable String roomId){
-        System.out.println("message = " + message);
-        simpMessageSendingOperations.convertAndSend("/topic/" + roomId, message);
+    public void pubChat(@Payload ChatRequest chatRequest, @DestinationVariable String roomId){
+        BroadcastMessage<ChatRequest> broadcastMessage = BroadcastMessage.<ChatRequest>builder()
+                .code(MessageCode.CHAT)
+                .data(chatRequest)
+                .build();
+
+        simpMessageSendingOperations.convertAndSend("/topic/" + roomId, broadcastMessage);
     }
 
 }

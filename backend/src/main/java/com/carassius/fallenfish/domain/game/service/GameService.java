@@ -4,7 +4,7 @@ import com.carassius.fallenfish.common.util.RandomId;
 import com.carassius.fallenfish.domain.game.dto.GameInfo;
 import com.carassius.fallenfish.domain.game.dto.Player;
 import com.carassius.fallenfish.domain.game.dto.PlayerRequest;
-import com.carassius.fallenfish.domain.game.entity.GameStatus;
+import com.carassius.fallenfish.domain.game.entity.MessageCode;
 import com.carassius.fallenfish.domain.member.entity.Member;
 import com.carassius.fallenfish.domain.member.repository.MemberRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -39,7 +39,7 @@ public class GameService {
 
     public GameInfo enterGameRoom(PlayerRequest playerRequest, String roomId) throws JsonProcessingException {
         GameInfo gameInfo = getRedisValue(roomId, GameInfo.class);
-        Optional<Member> member = memberRepository.findById(playerRequest.getRequesterId());
+        Optional<Member> member = memberRepository.findById(playerRequest.getRequester().getId());
         if(member.isEmpty()) {
             return null;
         }
@@ -55,7 +55,7 @@ public class GameService {
 
         GameInfo gameInfo = new GameInfo();
         gameInfo.setRoomId(roomId);
-        gameInfo.setStatus(GameStatus.LOBBY);
+        gameInfo.setCode(MessageCode.LOBBY);
         gameInfo.setManagerId(managerId);
         gameInfo.setMaxPlayers(6);
         List<Player> players = new ArrayList<>();
@@ -64,6 +64,5 @@ public class GameService {
         setRedisValue(roomId, gameInfo);
         return roomId;
     }
-
 
 }
