@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Routes } from 'react-router';
 import { Route, Outlet } from 'react-router-dom';
+import { MultiGamePage } from './present/pages/MultiGamePage';
 import * as Styled from './App.Styled';
 import SingleGamePage from './present/pages/SingleGamePage';
 import GlobalStyle from './action/GlobalStyle';
@@ -57,7 +58,7 @@ function App() {
         <Route path="/game" element={<Outlet />}>
           <Route index />
           <Route path="single" element={<SingleGamePage />} />
-          <Route path="multi" />
+          <Route path="multi" element={<MultiGamePage />} />
         </Route>
       </Routes>
     </Styled.AppWrapper>

@@ -1,0 +1,3 @@
+[submodule "backend/fish-config"]
+	path = backend/fish-config
+	url = https://lab.ssafy.com/k950331/fish-config.git
