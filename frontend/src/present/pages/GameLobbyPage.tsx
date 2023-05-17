@@ -4,11 +4,17 @@ import { Client, Message } from '@stomp/stompjs';
 import { useUserStore } from '../../store/userStore';
 import GameConnect from '../component/gamelobby/GameConnect';
 import UserList from '../layout/gamelobby/UserList';
+import { useLocation, useParams } from 'react-router';
 
 const GameLobbyPage = () => {
+  const { state } = useLocation() as unknown as {
+    state: string;
+  };
   const [roomCode, setRoomCode] = useState<string | null>(null);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    console.log(state);
+  }, []);
   const callback = (message: any) => {
     // called when the client receives a STOMP message from the server
     if (message.body) {
