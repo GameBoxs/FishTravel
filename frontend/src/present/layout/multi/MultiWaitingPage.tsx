@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useUserStore } from "../../../store/userStore";
-import { useGameInfoStore, useGameSettingStore } from "../../pages/MultiGamePage";
+import { useGameInfoStore } from "../../pages/MultiGamePage";
 
 type Props = {
   isLoaded: string
@@ -12,10 +12,8 @@ export const MultiWaitingPage = ({isLoaded}: Props) => {
   const { connection, id, name } = useUserStore();
   const { domestic, submittedPosition } = useGameInfoStore();
   useEffect(() => { 
-    console.log("ㅇㅇ", isLoaded);
-    console.log("ㅇㅇㅇ", submittedPosition);
     if (isLoaded !== "ready") return;
-    if (domestic && submittedPosition !== null && naver.maps.Map) {
+    if (domestic && submittedPosition !== null && naver && naver.maps.Map) {
       // 네이버 지도를 보여줘야 하는 경우
       mapRef.current = new naver.maps.Map("waitingmap", {
         center: new naver.maps.LatLng(submittedPosition.lat, submittedPosition.lng)
@@ -25,7 +23,7 @@ export const MultiWaitingPage = ({isLoaded}: Props) => {
         position: new naver.maps.LatLng(submittedPosition.lat, submittedPosition.lng),
       })
     }
-    else if (!domestic && submittedPosition !== null && google.maps.Map) { 
+    else if (!domestic && submittedPosition !== null && google && google.maps.Map) { 
       mapRef.current = new google.maps.Map(document.getElementById("waitingmap") as HTMLElement, {
         center: new google.maps.LatLng(submittedPosition.lat, submittedPosition.lng),
         zoom: 14,
@@ -43,6 +41,9 @@ export const MultiWaitingPage = ({isLoaded}: Props) => {
 
   return (
     <PickerContainer>
+      <HeaderText>
+        라운드가 종료될 때 까지 기다려주세요.
+      </HeaderText>
       <MapContainer id="waitingmap">
       </MapContainer>
     </PickerContainer>
@@ -63,6 +64,17 @@ const MapContainer = styled.div`
   width: 50vw;
   height: 50vh;
   background: rgba(255, 255, 255, 1);
+  border-radius: 1.5rem;
+  border: none;
+  `
+const HeaderText = styled.div`
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: xx-large;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.8);
   border-radius: 1.5rem;
   border: none;
 `
