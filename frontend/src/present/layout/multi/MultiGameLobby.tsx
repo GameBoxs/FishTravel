@@ -1,26 +1,26 @@
-import { Client } from "@stomp/stompjs";
-import { GrCirclePlay } from "react-icons/gr";
-import { ImExit } from "react-icons/im";
-import styled from "styled-components";
-import { useUserStore } from "../../../store/userStore";
-import { ChattingHolder } from "../../component/multi/ChattingHolder";
-import { LobbyUserHolder } from "../../component/multi/LobbyUserHolder";
-import { useGameInfoStore } from "../../pages/MultiGamePage";
+import { Client } from '@stomp/stompjs';
+import { GrCirclePlay } from 'react-icons/gr';
+import { ImExit } from 'react-icons/im';
+import styled from 'styled-components';
+import { useUserStore } from '../../../store/userStore';
+import { ChattingHolder } from '../../component/multi/ChattingHolder';
+import { LobbyUserHolder } from '../../component/multi/LobbyUserHolder';
+import { useGameInfoStore } from '../../pages/MultiGamePage';
 
 type Props = {
-  
+  message: any;
 };
-export const MultiGameLobby = (props: Props) => {
+export const MultiGameLobby = ({ message }: Props) => {
   const { connection } = useUserStore();
-  const {roomId } = useGameInfoStore();
-  const handleStart = () => { 
+  const { roomId } = useGameInfoStore();
+  const handleStart = () => {
     (connection as Client).publish({
       destination: `/pub/room/${roomId}/start`,
-    })
-  }
+    });
+  };
   return (
     <LobbyContainer>
-      <ChattingHolder />
+      <ChattingHolder message={message} />
       <LobbyUserHolder />
       <StartButton onClick={handleStart}>
         <GrCirclePlay />
@@ -37,9 +37,9 @@ export const MultiGameLobby = (props: Props) => {
 const LobbyContainer = styled.div`
   width: 100vw;
   height: 100vh;
-  background-color: #0C134F;
-  background-image: linear-gradient(45deg, #1D267D 0%, #5C469C 46%, #D4ADFC 100%);
-`
+  background-color: #0c134f;
+  background-image: linear-gradient(45deg, #1d267d 0%, #5c469c 46%, #d4adfc 100%);
+`;
 const StartButton = styled.button`
   position: absolute;
   right: 1vw;
@@ -51,7 +51,7 @@ const StartButton = styled.button`
   font-size: x-large;
   background: #5dbea3;
   color: black;
-  `
+`;
 const ExitButton = styled.button`
   position: absolute;
   right: 1vw;
@@ -63,4 +63,4 @@ const ExitButton = styled.button`
   font-size: x-large;
   background: #dd7973;
   color: white;
-`
+`;
