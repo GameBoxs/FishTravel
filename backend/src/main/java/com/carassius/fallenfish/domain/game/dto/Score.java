@@ -6,6 +6,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Score {
-    private Player player;
-    private int point;
+    private MarkerRequest answer;
+    private double distance;
 }
