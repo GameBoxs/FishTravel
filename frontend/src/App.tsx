@@ -58,7 +58,7 @@ function App() {
         <Route path="/game" element={<Outlet />}>
           <Route index />
           <Route path="single" element={<SingleGamePage />} />
-          <Route path="multi" element={<MultiGamePage />} />
+          <Route path="multi/:roomCode" element={<MultiGamePage />} />
         </Route>
       </Routes>
     </Styled.AppWrapper>

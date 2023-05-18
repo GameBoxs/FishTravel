@@ -118,7 +118,7 @@ export const MultiGameInternational = ({ isObserver }: Props) => {
         결정
       </DecisionButton>
       </>}
-      <Timer isDomestic={false} />
+      <Timer initialTime={100} />
       <Ranking isDomestic={true} />
     </div>
   );

@@ -1,7 +1,10 @@
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
-import { useGameSettingStore } from "../../pages/MultiGamePage";
+import { useGameInfoStore, useGameSettingStore } from "../../pages/MultiGamePage";
 import { ImCheckmark } from "react-icons/im";
+import { Timer } from "../../component/multi/Timer";
+import { useUserStore } from "../../../store/userStore";
+import { Client } from "@stomp/stompjs";
 
 type Props = {
   isLoaded: string
@@ -10,6 +13,8 @@ export const MultiGamePicker = ({isLoaded}: Props) => {
   const mapRef = useRef<naver.maps.Map | google.maps.Map | null>(null);
   const markerRef = useRef<naver.maps.Marker | google.maps.Marker | null>(null);
   const { isDomestic } = useGameSettingStore();
+  const { connection, id, name } = useUserStore();
+  const { roomId } = useGameInfoStore();
   useEffect(() => { 
     if (isLoaded !== "ready") return;
     if (isDomestic && naver.maps.Map) {
@@ -48,11 +53,61 @@ export const MultiGamePicker = ({isLoaded}: Props) => {
       })
     }
   }, [isLoaded])
+
+  const handlePicker = () => { 
+    const pos = markerRef.current?.getPosition();
+    if (pos instanceof naver.maps.LatLng) {
+      console.log({
+        name: name,
+        lat: pos.lat(),
+        lng: pos.lng(),
+        requester: {
+          id: id,
+          name: name
+        }
+      });
+      (connection as Client).publish({
+        destination: `/pub/room/${roomId}/pickfish`,
+        body: JSON.stringify({
+          name: name,
+          lat: pos.lat(),
+          lng: pos.lng(),
+          requester: {
+            id: id,
+            name: name
+          }
+        })
+      })
+    } else if (pos instanceof google.maps.LatLng) { 
+      console.log({
+        name: name,
+        lat: pos.lat(),
+        lng: pos.lng(),
+        requester: {
+          id: id,
+          name: name
+        }
+      });
+      (connection as Client).publish({
+        destination: `/pub/room/${roomId}/pickfish`,
+        body: JSON.stringify({
+          name: name,
+          lat: pos.lat(),
+          lng: pos.lng(),
+          requester: {
+            id: id,
+            name: name
+          }
+        })
+      })
+    } 
+  }
   return (
     <PickerContainer>
+      <Timer initialTime={20}/>
       <MapContainer id="pickermap">
       </MapContainer>
-      <PickingButton>
+      <PickingButton onClick={handlePicker}>
         <ImCheckmark />
         <Seperator />
         선택
@@ -101,3 +156,4 @@ const Seperator = styled.span`
   width: 4px;
   vertical-align: middle;
 `
+
