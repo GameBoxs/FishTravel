@@ -73,6 +73,7 @@ public class GameService {
         RoundInfo[] rounds = new RoundInfo[playerCount];
         for(int i = 0; i < playerCount; i++) {
             rounds[i] = new RoundInfo();
+            rounds[i].setRoundOrder(i+1);
         }
         gameInfo.setRounds(rounds);
         setRedisValue(roomId, gameInfo);
