@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
-import { useGameInfoStore, useGameSettingStore } from "../../pages/MultiGamePage";
+import { useGameInfoStore } from "../../pages/MultiGamePage";
 import { ImCheckmark } from "react-icons/im";
 import { Timer } from "../../component/multi/Timer";
 import { useUserStore } from "../../../store/userStore";
@@ -12,19 +12,19 @@ type Props = {
 export const MultiGamePicker = ({isLoaded}: Props) => {
   const mapRef = useRef<naver.maps.Map | google.maps.Map | null>(null);
   const markerRef = useRef<naver.maps.Marker | google.maps.Marker | null>(null);
-  const { isDomestic } = useGameSettingStore();
   const { connection, id, name } = useUserStore();
-  const { roomId } = useGameInfoStore();
+  const { roomId, domestic } = useGameInfoStore();
   useEffect(() => { 
     if (isLoaded !== "ready") return;
-    if (isDomestic && naver.maps.Map) {
+    if (domestic && naver.maps.Map) {
       // 네이버 지도를 보여줘야 하는 경우
       mapRef.current = new naver.maps.Map("pickermap", {
-        center: new naver.maps.LatLng(36.1146, 128.3645)
+        center: new naver.maps.LatLng(36.1146, 128.3645),
+        zoom: 1,
       })
       markerRef.current = new naver.maps.Marker({
         map: mapRef.current,
-        position: new naver.maps.LatLng(0, 0,),
+        position: new naver.maps.LatLng(0, 0),
       })
       naver.maps.Event.addListener(mapRef.current, 'click', function (e: naver.maps.PointerEvent) {
         if (markerRef.current && markerRef.current instanceof naver.maps.Marker) { 
@@ -33,10 +33,10 @@ export const MultiGamePicker = ({isLoaded}: Props) => {
         }
       });
     }
-    else if (!isDomestic && google.maps.Map) { 
+    else if (!domestic && google.maps.Map) { 
       mapRef.current = new google.maps.Map(document.getElementById("pickermap") as HTMLElement, {
         center: new google.maps.LatLng(36.1146, 128.3645),
-        zoom: 14,
+        zoom: 1,
         fullscreenControl: false,
         panControl: false,
         disableDefaultUI: true,
@@ -44,6 +44,7 @@ export const MultiGamePicker = ({isLoaded}: Props) => {
       });
       markerRef.current = new google.maps.Marker({
         map: mapRef.current,
+        position: new google.maps.LatLng(0, 0),
       })
       mapRef.current.addListener("click", (event: google.maps.MapMouseEvent) => { 
         const clickedPos = event.latLng;
@@ -56,16 +57,11 @@ export const MultiGamePicker = ({isLoaded}: Props) => {
 
   const handlePicker = () => { 
     const pos = markerRef.current?.getPosition();
-    if (pos instanceof naver.maps.LatLng) {
-      console.log({
-        name: name,
-        lat: pos.lat(),
-        lng: pos.lng(),
-        requester: {
-          id: id,
-          name: name
-        }
-      });
+    if (naver && pos instanceof naver.maps.LatLng) {
+      if (pos.lat() === 0 && pos.lng() === 0) { 
+        alert("위치를 지정하고 다시 시도해주세요.");
+        return;
+      }
       (connection as Client).publish({
         destination: `/pub/room/${roomId}/pickfish`,
         body: JSON.stringify({
@@ -78,16 +74,11 @@ export const MultiGamePicker = ({isLoaded}: Props) => {
           }
         })
       })
-    } else if (pos instanceof google.maps.LatLng) { 
-      console.log({
-        name: name,
-        lat: pos.lat(),
-        lng: pos.lng(),
-        requester: {
-          id: id,
-          name: name
-        }
-      });
+    } else if (google && pos instanceof google.maps.LatLng) { 
+      if (pos.lat() === 0 && pos.lng() === 0) { 
+        alert("위치를 지정하고 다시 시도해주세요.");
+        return;
+      }
       (connection as Client).publish({
         destination: `/pub/room/${roomId}/pickfish`,
         body: JSON.stringify({
