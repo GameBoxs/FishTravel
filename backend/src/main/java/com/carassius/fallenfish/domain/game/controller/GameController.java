@@ -110,7 +110,7 @@ public class GameController {
             wait(7000);
 
             // 5. 라운드 종료 신호
-            gameInfo = gameService.endRound(roomId);
+            gameInfo = gameService.endRound(roomId, i);
             broadcastMessage = BroadcastMessage.<GameInfo>builder()
                     .code(MessageCode.ROUND_RESULT)
                     .data(gameInfo)
@@ -121,6 +121,7 @@ public class GameController {
             wait(7000);
             // 7번으로 되돌아감
         }
+        System.out.println(roomId + " : 게임 종료");
         simpMessageSendingOperations.convertAndSend("/topic/" + roomId, "다 끝났다");
         // TODO: 최종 결과 및 종료
     }
