@@ -16,6 +16,7 @@ public class GameInfo {
     private Long managerId;
     private int maxPlayers;
     private List<Player> players;
+    private int currentRound;
     private RoundInfo[] rounds;
     private boolean isDomestic;
 }
