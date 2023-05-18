@@ -134,6 +134,10 @@ public class GameController {
     @MessageMapping("/room/{roomId}/answer")
     public void pubAnswer(@Payload MarkerRequest markerRequest, @DestinationVariable String roomId) throws JsonProcessingException {
         gameService.submitAnswer(markerRequest, roomId);
-        // TODO: 전파하기
+        BroadcastMessage<MarkerRequest> broadcastMessage = BroadcastMessage.<MarkerRequest>builder()
+                .code(MessageCode.ANSWER)
+                .data(markerRequest)
+                .build();
+        simpMessageSendingOperations.convertAndSend("/topic/" + roomId, broadcastMessage);
     }
 }
