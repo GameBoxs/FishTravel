@@ -1,14 +1,12 @@
 // @flow 
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useGameSettingStore } from '../../pages/MultiGamePage';
 import { motion } from "framer-motion";
 type Props = {
   initialTime: number;
 };
 export const Timer = ({ initialTime }: Props) => {
   const [time, setTime] = useState(initialTime);
-  const { setGameStage } = useGameSettingStore();
   useEffect(() => { 
     const timer = setInterval(() => {
       setTime((prev) => {
