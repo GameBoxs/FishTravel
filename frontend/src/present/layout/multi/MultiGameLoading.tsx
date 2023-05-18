@@ -1,41 +1,27 @@
 import styled from "styled-components";
 import { motion, stagger } from "framer-motion";
 import { useEffect, useState } from "react";
-import { useGameSettingStore } from "../../pages/MultiGamePage";
+import { useGameInfoStore } from "../../pages/MultiGamePage";
 // @flow 
 type Props = {
   
 };
 export const MultiGameLoading = (props: Props) => {
-  const [time, setTime] = useState(5);
-  const { setGameStage } = useGameSettingStore();
-  useEffect(() => { 
-    const timer = setInterval(() => {
-      setTime((prev) => {
-        return prev > 0 ? prev - 1 : 0;
-      });
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [])
-  useEffect(() => { 
-    if (time == 0) {
-      setGameStage(2);
-    }
-  }, [time])
+  const { currentRound, problemRequester } = useGameInfoStore();
   return (
     <>
       <Background>
         <Jumbotron>
           <RoundCountContainer>
             <RoundCountText>
-              Round 1
+              Round {currentRound}
             </RoundCountText>
           </RoundCountContainer>
           <MiddleContent>
             <motion.img src="https://static.wikia.nocookie.net/seuss/images/3/35/Parachute_Fish.PNG" alt="" initial={{scale: 1.5} } animate={{ scale: 1, rotateZ: 360, scaleX: 0, scaleY: 0}} transition={{repeat: Infinity, duration: 5}} />
           </MiddleContent>
           <FallingMessage>
-            가나다라마바사가 떨어지고 있습니다.
+            {problemRequester?.name}이(가) 떨어지고 있습니다.
           </FallingMessage>
         </Jumbotron>
       </Background>

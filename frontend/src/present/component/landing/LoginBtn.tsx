@@ -3,7 +3,7 @@ import * as Style from './LoginBtn.Styled';
 
 
 const LoginBtn = () => {
-  const kakaoLoginUrl = `http://localhost:8080/api/oauth2/authorization/kakao`;
+  const kakaoLoginUrl = `https://k8d205.p.ssafy.io/api/oauth2/authorization/kakao`;
 
   return (
     <Style.LoginBtnWrapper>

@@ -1,5 +1,5 @@
 // authStore.ts
-import create from 'zustand';
+import { create } from 'zustand';
 
 type State = {
   accessToken: string | null;

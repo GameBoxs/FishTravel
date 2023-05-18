@@ -33,7 +33,7 @@ function App() {
   useEffect(() => {
     if (id == null && isLogin == false && name == null) {
       axios
-        .get('http://localhost:8080/api/info', {
+        .get('https://k8d205.p.ssafy.io/api/info', {
           withCredentials: true,
         })
         .then((response) => {

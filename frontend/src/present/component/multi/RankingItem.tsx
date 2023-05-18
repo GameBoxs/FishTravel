@@ -14,8 +14,8 @@ export const RankingItem = ({ item, rank }: Props) => {
       </div>
       <div style={{ flex: 3, overflow: "hidden", display: "flex", }}>
         <RankingTextContainer>
-          <RankingUserText>{item.player.name}</RankingUserText>
-          <RankingScoreText>{item.scoreSum}</RankingScoreText>
+          <RankingUserText>{item.player?.name}</RankingUserText>
+          <RankingScoreText>{item.scoreSum.toFixed(0)}</RankingScoreText>
         </RankingTextContainer>
       </div>
     </RankingItemContainer>
@@ -24,7 +24,6 @@ export const RankingItem = ({ item, rank }: Props) => {
 
 const RankingItemContainer = styled.div`
   display: flex;
-  flex: 1;
   align-items: center;
   white-space: nowrap;
   overflow: hidden;
