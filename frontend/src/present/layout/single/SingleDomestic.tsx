@@ -12,14 +12,15 @@ const SingleDomestic = () => {
     const [selectPosition, setSelectPosition] = useState<null | naver.maps.LatLng>(null);
     const [answerPosition, setAnswerPosition] = useState<naver.maps.LatLng>(new naver.maps.LatLng(36.48800827917877, 126.3337966701461));
     const [timer, setTimer] = useState(120);
-
+    
     const mapRef = useRef<HTMLDivElement | null>(null);
     const roadRef = useRef<HTMLDivElement | null>(null);
     const mapObject = useRef<null | naver.maps.Map>(null);
     const roadObject = useRef<null | naver.maps.Panorama>(null);
     let selectMarker = useRef<null | naver.maps.Marker>(null);
     let answerMarker = useRef<null | naver.maps.Marker>(null);
-
+    let idxArr = useRef([-1, -1, -1]);
+    
     useEffect(() => {
         const handleResize = () => {
             if (!roadObject.current) return;
@@ -30,10 +31,11 @@ const SingleDomestic = () => {
             window.removeEventListener("resize", handleResize);
         };
     }, []);
-
+    
     useEffect(() => {
         if(currentState == 0) {
-            resetData();
+            let tempLatLng = changeAnswerPosition();
+            resetData(tempLatLng);
         }
     },[currentState])
 
@@ -43,16 +45,11 @@ const SingleDomestic = () => {
         }
     },[timer])
 
-    // useEffect(() => {
-    //     let data: Api.InitType = {mapRef, roadRef, mapObject, roadObject, selectPosition, setSelectPosition, selectMarker};
-    //     Api.Init(data);
-    // },[])
-
     const finishStage = () => {
         setTimer(0);
         setCurrentState(1);
     }
-    const resetData = () => {
+    const resetData = (answerPosition:naver.maps.LatLng) => {
         selectMarker.current?.setMap(null);
         selectMarker.current = null;
         setTimer(120);
@@ -65,6 +62,19 @@ const SingleDomestic = () => {
     }
     const startStage =() => {
         setCurrentState(0);
+    }
+    const changeAnswerPosition = () => {
+        let dataSetSize = Api.getDataSetSize();
+        let randomIdx = Math.floor(Math.random() * dataSetSize);
+        while(true) {
+            if(idxArr.current.indexOf(randomIdx) === -1) {
+                break;
+            }
+            randomIdx = Math.floor(Math.random() * dataSetSize);
+        }
+        setAnswerPosition(Api.getDataSet(randomIdx));
+        idxArr.current[currentStage] = randomIdx;
+        return Api.getDataSet(randomIdx);
     }
 
     return (

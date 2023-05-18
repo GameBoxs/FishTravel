@@ -11,10 +11,9 @@ type propsType = {
 }
 
 const ResultMapGoogle = (props:propsType) => {
-    const {currentStage, selectPosition, startStage} = props;
+    const {currentStage, selectPosition, startStage, answerPosition} = props;
     const moveNavigation = useNavigate();
     
-    const [answerPosition, setAnswerPosition] = useState<null | google.maps.LatLng>(new google.maps.LatLng(36.1073, 128.4175));
     const [distancePoint, setDistancePoint] = useState("");
     const [distanceUnit, setDistanceUinit] = useState(" M");
 
@@ -50,10 +49,8 @@ const ResultMapGoogle = (props:propsType) => {
             <Style.StageText>Stage {currentStage}</Style.StageText>
             <Style.ResultMap ref={resultMapRef} />
             <Style.ResultInfo>
-                <Style.ResultText>떨어진 거리</Style.ResultText>
-                <Style.ResultText>Score</Style.ResultText>
-                <Style.ResultText>{distancePoint}M</Style.ResultText>
-                <Style.ResultText>4</Style.ResultText>
+                <Style.ResultText>정답과 선택한 거리차이</Style.ResultText>
+                <Style.ResultText>{distancePoint}{distanceUnit}</Style.ResultText>
             </Style.ResultInfo>
             {
                 currentStage != 3 ? 

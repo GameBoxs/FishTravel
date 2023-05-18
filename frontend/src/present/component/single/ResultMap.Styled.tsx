@@ -60,7 +60,7 @@ export const ResultInfo = styled.div`
     left: 30%;
     bottom: 15%;
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 100%;
     grid-template-rows: 20% 80%;
 `
 
