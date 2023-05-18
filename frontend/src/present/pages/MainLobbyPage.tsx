@@ -14,14 +14,14 @@ const MainLobbyPage = () => {
   }, [name]);
 
   return (
-    <>
+    <div style={{ height: '100%', width: '100%', background: 'linear-gradient(to right, red , yellow)' }}>
       <div style={{ height: '40%' }}>
         <TitleSection />
       </div>
       <div style={{ height: '60%' }}>
         <SelectSection />
       </div>
-    </>
+    </div>
   );
 };
 

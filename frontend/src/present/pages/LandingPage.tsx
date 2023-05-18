@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 
 const LandingPage = () => {
   const [showMap, setShowMap] = useState(false);
-  let isLogin = useUserStore((state) => state.isLogin);
-  let setIsLogin = useUserStore((state) => state.setIsLogin);
+  const isLogin = useUserStore((state) => state.isLogin);
+  const setIsLogin = useUserStore((state) => state.setIsLogin);
   const navigate = useNavigate();
 
   useEffect(() => {
