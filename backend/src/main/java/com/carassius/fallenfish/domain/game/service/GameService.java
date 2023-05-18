@@ -9,7 +9,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -21,7 +20,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class GameService {
-    private final SimpMessageSendingOperations simpMessageSendingOperations;
     private final MemberRepository memberRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
@@ -73,6 +71,7 @@ public class GameService {
         RoundInfo[] rounds = new RoundInfo[playerCount];
         for(int i = 0; i < playerCount; i++) {
             rounds[i] = new RoundInfo();
+            rounds[i].setRoundOrder(i+1);
         }
         gameInfo.setRounds(rounds);
         setRedisValue(roomId, gameInfo);
@@ -100,9 +99,10 @@ public class GameService {
         setRedisValue(key, playerInfo);
     }
 
-    public GameInfo waitForNextRound(String roomId) throws JsonProcessingException {
+    public GameInfo waitForNextRound(String roomId, int currentRound) throws JsonProcessingException {
         GameInfo gameInfo = getRedisValue(roomId, GameInfo.class);
         gameInfo.setCode(MessageCode.WAIT_FOR_NEXT_ROUND);
+        gameInfo.setCurrentRound(currentRound);
         setRedisValue(roomId, gameInfo);
         return gameInfo;
     }
@@ -122,5 +122,16 @@ public class GameService {
         gameInfo.setCode(MessageCode.ROUND_RESULT);
         setRedisValue(roomId, gameInfo);
         return gameInfo;
+    }
+
+    public void submitAnswer(MarkerRequest markerRequest, String roomId) throws JsonProcessingException {
+        GameInfo gameInfo = getRedisValue(roomId, GameInfo.class);
+        int currentRound = gameInfo.getCurrentRound() - 1;
+
+        String key = "member_" + markerRequest.getRequester().getId();
+        PlayerInfo playerInfo = getRedisValue(key, PlayerInfo.class);
+        playerInfo.getAnswerMarkers()[currentRound] = markerRequest;
+        playerInfo.setProblemMarker(markerRequest);
+        setRedisValue(key, playerInfo);
     }
 }
