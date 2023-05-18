@@ -5,10 +5,9 @@ import useLoadScript from "../../../action/hooks/useLoadScript";
 import { Timer } from "../../component/multi/Timer";
 import { Ranking } from "../../component/multi/Ranking";
 import { GrPowerReset } from "react-icons/gr";
-import { useGameInfoStore, useGameSettingStore } from "../../pages/MultiGamePage";
+import { useGameInfoStore } from "../../pages/MultiGamePage";
 import { useUserStore } from "../../../store/userStore";
 import { Client } from "@stomp/stompjs";
-import { TMessageCode } from "../../pages";
 type Props = {
   isObserver: boolean,
 };
@@ -18,8 +17,9 @@ export const MultiGameInternational = ({ isObserver }: Props) => {
   const panoRef = useRef<google.maps.StreetViewPanorama | null>(null);
   const controlRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<google.maps.Marker | null>(null);
+  const observerMarkerArrayRef = useRef<Array<google.maps.Marker>>([]);
   const [isExpand, setIsExpand] = useState(false);
-  const { problemPosition, roomId, setCode } = useGameInfoStore();
+  const { problemPosition, roomId, observingMarkerArray } = useGameInfoStore();
   const { connection, name, id } = useUserStore();
   const handleConfirmLocation = () => { 
     const pos = markerRef.current?.getPosition();
@@ -109,12 +109,47 @@ export const MultiGameInternational = ({ isObserver }: Props) => {
       }
     }
   }, [isLoaded]);
+  useEffect(() => { 
+    if (mapRef.current === null) return;
+    for (const obsMarker of observingMarkerArray) { 
+      const foundMarker = observerMarkerArrayRef.current.find((m) => m.getTitle() === obsMarker.requester.name);
+      if (foundMarker) {
+        foundMarker.setPosition(new google.maps.LatLng(obsMarker.lat, obsMarker.lng));
+      } else { 
+        const marker = new google.maps.Marker({
+          position: new google.maps.LatLng(obsMarker.lat, obsMarker.lng),
+          title: obsMarker.requester.name,
+          map: mapRef.current,
+        })
+        observerMarkerArrayRef.current.push(
+
+        )
+        const info = new google.maps.InfoWindow({
+          content: `
+          <div style="padding: 8px; border: 2px solid black; border-radius: 2rem; text-align: center;">
+            <h3>${obsMarker.requester.name}</h3>
+          </div>
+          `,
+        })
+        marker.addListener("mouseover", () => { 
+          if (mapRef.current && mapRef.current instanceof google.maps.Map && marker instanceof google.maps.Marker) { 
+            info.open({
+              anchor: marker,
+              map: mapRef.current
+            });
+          }
+        })
+        marker.addListener("mouseout", () => {
+          info.close();
+        })
+      }
+    }
+  }, [observingMarkerArray])
   return (
     <div>
       {isObserver && <>
         <ObserverMapContent id="obsmap">
         </ObserverMapContent>
-        <ChattingInput></ChattingInput>
       </>}
       {!isObserver && <>
       <MapContent id="map" isExpand={isExpand}> 

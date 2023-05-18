@@ -7,8 +7,8 @@ import { Timer } from "../../component/multi/Timer";
 import { Ranking } from "../../component/multi/Ranking";
 import { useGameInfoStore } from "../../pages/MultiGamePage";
 import { useUserStore } from "../../../store/userStore";
-import { Client } from "@stomp/stompjs";
 import { TMessageCode } from "../../pages";
+import { Client } from "@stomp/stompjs";
 type Props = {
   isObserver: boolean,
 };
@@ -17,10 +17,10 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
   const mapRef = useRef<naver.maps.Map | null>(null);
   const panoRef = useRef<naver.maps.Panorama | null>(null);
   const controlRef = useRef<HTMLDivElement>(null);
-  const chatRef = useRef<HTMLInputElement>(null);
   const markerRef = useRef<naver.maps.Marker | null>(null);
+  const observerMarkerArrayRef = useRef<Array<naver.maps.Marker>>([]);
   const [isExpand, setIsExpand] = useState(false);
-  const { problemPosition, roomId, setCode } = useGameInfoStore();
+  const { problemPosition, roomId, observingMarkerArray } = useGameInfoStore();
   const { connection, name, id } = useUserStore();
   const handleConfirmLocation = () => { 
     const pos = markerRef.current?.getPosition();
@@ -40,12 +40,6 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
       })
     } else { 
       alert("위치를 선택하고 확정 버튼을 눌러주세요.");
-    }
-  }
-  const handleChatting = (e: React.KeyboardEvent<HTMLInputElement>) => { 
-    if (e.key == 'Enter') {
-      console.log(chatRef.current?.value);
-      chatRef.current!.value = '';
     }
   }
   useEffect(() => {
@@ -127,11 +121,42 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
       }
     }
   }, [isLoaded]);
+  useEffect(() => { 
+    if (mapRef.current === null) return;
+    for (const obsMarker of observingMarkerArray) { 
+      const foundMarker = observerMarkerArrayRef.current.find((m) => m.getTitle() === obsMarker.requester.name);
+      if (foundMarker) {
+        foundMarker.setPosition(new naver.maps.LatLng(obsMarker.lat, obsMarker.lng));
+      } else { 
+        const marker = new naver.maps.Marker({
+          position: new naver.maps.LatLng(obsMarker.lat, obsMarker.lng),
+          title: obsMarker.requester.name,
+          map: mapRef.current,
+        });
+        observerMarkerArrayRef.current.push(marker)
+        const info = new naver.maps.InfoWindow({
+          content: `
+          <div style="padding: 8px; border: 2px solid black; border-radius: 2rem; text-align: center;">
+            <h3>${obsMarker.requester.name}</h3>
+          </div>
+          `,
+          borderWidth: 0,
+        })
+        marker.addListener("mouseover", () => { 
+          if (mapRef.current && mapRef.current instanceof naver.maps.Map && marker instanceof naver.maps.Marker) { 
+            info.open(mapRef.current, marker);
+          }
+        })
+        marker.addListener("mouseout", () => {
+          if (info.getMap()) info.close();
+        })
+      }
+    }
+  }, [observingMarkerArray])
   return (
     <div style={{ width: "100vw", height: "100vh", position: "relative" }}>
       {isObserver && <React.Fragment>
         <ObserverMapContent id="obsmap" />
-        <ChattingInput ref={chatRef} onKeyUp={handleChatting} />
       </React.Fragment>}
       {!isObserver &&
         <React.Fragment>
@@ -156,7 +181,7 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
           </div>
       </React.Fragment> }
       <Timer initialTime={100} />
-      {/* <Ranking isDomestic={true} /> */}
+      <Ranking isDomestic={true} />
     </div>
   );
 };
