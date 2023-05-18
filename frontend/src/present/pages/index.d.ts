@@ -4,7 +4,8 @@ export type TGameInfo = {
   managerId: number;
   maxPlayers: number;
   players: Array<TPlayer> | null;
-  rounds: Array<TRound> | null;
+  currentRound: number
+  rounds: Array<TRoundInfo> | null;
   domestic: boolean;
 }
 
@@ -25,7 +26,7 @@ export type TPlayer = {
   id: number;
   name: string;
 }
-export type TRound = {
+export type TRoundInfo = {
   roundOrder: number;
   problem: TMarkerRequest;
   scores: Array<TScore>;
