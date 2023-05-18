@@ -1,6 +1,4 @@
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { useGameSettingStore } from "../../pages/MultiGamePage";
 type Props = {
   
 };

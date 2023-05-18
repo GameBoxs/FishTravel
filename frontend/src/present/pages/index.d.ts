@@ -4,7 +4,8 @@ export type TGameInfo = {
   managerId: number;
   maxPlayers: number;
   players: Array<TPlayer> | null;
-  rounds: Array<TRound> | null;
+  currentRound: number
+  rounds: Array<TRoundInfo> | null;
   domestic: boolean;
 }
 
@@ -18,20 +19,22 @@ export enum TMessageCode {
   IN_ROUND = "IN_ROUND",
   ROUND_RESULT = "ROUND_RESULT",
   FINAL_RESULT = "FINAL_RESULT",
+  WAITING = "WAITING",
 };
 
 export type TPlayer = {
   id: number;
   name: string;
 }
-export type TRound = {
+export type TRoundInfo = {
   roundOrder: number;
+  problem: TMarkerRequest;
   scores: Array<TScore>;
 }
 
 export type TScore = {
-  player: TPlayer;
-  point: number;
+  answer: TMarkerRequest;
+  distance: number;
 }
 
 export type TBroadcastMessage<T> = {

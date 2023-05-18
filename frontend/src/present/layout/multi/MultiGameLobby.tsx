@@ -1,6 +1,7 @@
 import { Client } from '@stomp/stompjs';
 import { GrCirclePlay } from 'react-icons/gr';
 import { ImExit } from 'react-icons/im';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useUserStore } from '../../../store/userStore';
 import { ChattingHolder } from '../../component/multi/ChattingHolder';
@@ -11,8 +12,9 @@ type Props = {
   message: any;
 };
 export const MultiGameLobby = ({ message }: Props) => {
-  const { connection } = useUserStore();
-  const { roomId } = useGameInfoStore();
+  const { connection, id } = useUserStore();
+  const { roomId, managerId } = useGameInfoStore();
+  const navigate = useNavigate();
   const handleStart = () => {
     (connection as Client).publish({
       destination: `/pub/room/${roomId}/start`,
@@ -22,11 +24,12 @@ export const MultiGameLobby = ({ message }: Props) => {
     <LobbyContainer>
       <ChattingHolder message={message} />
       <LobbyUserHolder />
+      {id && Number(id) === managerId &&
       <StartButton onClick={handleStart}>
         <GrCirclePlay />
         시작
-      </StartButton>
-      <ExitButton>
+      </StartButton>}
+      <ExitButton onClick={() => {navigate('/')}}>
         <ImExit />
         나가기
       </ExitButton>

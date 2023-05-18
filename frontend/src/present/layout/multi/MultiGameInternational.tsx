@@ -5,7 +5,9 @@ import useLoadScript from "../../../action/hooks/useLoadScript";
 import { Timer } from "../../component/multi/Timer";
 import { Ranking } from "../../component/multi/Ranking";
 import { GrPowerReset } from "react-icons/gr";
-import { useGameSettingStore } from "../../pages/MultiGamePage";
+import { useGameInfoStore } from "../../pages/MultiGamePage";
+import { useUserStore } from "../../../store/userStore";
+import { Client } from "@stomp/stompjs";
 type Props = {
   isObserver: boolean,
 };
@@ -15,22 +17,38 @@ export const MultiGameInternational = ({ isObserver }: Props) => {
   const panoRef = useRef<google.maps.StreetViewPanorama | null>(null);
   const controlRef = useRef<HTMLDivElement>(null);
   const markerRef = useRef<google.maps.Marker | null>(null);
+  const observerMarkerArrayRef = useRef<Array<google.maps.Marker>>([]);
   const [isExpand, setIsExpand] = useState(false);
-  const initialPosition = useRef<google.maps.LatLng | null>(null);
-  const { setGameStage } = useGameSettingStore();
+  const { problemPosition, roomId, observingMarkerArray } = useGameInfoStore();
+  const { connection, name, id } = useUserStore();
   const handleConfirmLocation = () => { 
-    setGameStage(3);
+    const pos = markerRef.current?.getPosition();
+    if (pos instanceof google.maps.LatLng) {
+      (connection as Client).publish({
+        destination: `/pub/room/${roomId}/answer`,
+        body: JSON.stringify({
+          name: name,
+          lat: pos.lat(),
+          lng: pos.lng(),
+          requester: {
+            id: id,
+            name: name
+          }
+        })
+      })
+    } else { 
+      alert("위치를 선택하고 확정 버튼을 눌러주세요.");
+    }
   }
   useEffect(() => {
     if (isLoaded === "loading") return;
-    initialPosition.current = new google.maps.LatLng(37.3599605, 127.1058814);
     if (isObserver) {
       // 지도 객체 없으면 초기화
       if (mapRef.current === null) {
         mapRef.current = new google.maps.Map(
           document.getElementById("obsmap") as HTMLElement,
           {
-            center: initialPosition.current ? initialPosition.current : new google.maps.LatLng(33, 128),
+            center: new google.maps.LatLng(problemPosition!.lat, problemPosition!.lng),
             zoom: 3,
             fullscreenControl: false,
             panControl: false,
@@ -45,7 +63,7 @@ export const MultiGameInternational = ({ isObserver }: Props) => {
         mapRef.current = new google.maps.Map(
           document.getElementById("map") as HTMLElement,
           {
-            center: initialPosition.current ? initialPosition.current : new google.maps.LatLng(33, 128),
+            center: new google.maps.LatLng(problemPosition!.lat, problemPosition!.lng),
             zoom: 1,
             fullscreenControl: false,
             panControl: false,
@@ -73,7 +91,7 @@ export const MultiGameInternational = ({ isObserver }: Props) => {
         panoRef.current = new google.maps.StreetViewPanorama(
           document.getElementById("pano") as HTMLElement,
           {
-            position: initialPosition.current,
+            position: new google.maps.LatLng(problemPosition!.lat, problemPosition!.lng),
             pov: {
               heading: 34,
               pitch: 10,
@@ -91,12 +109,47 @@ export const MultiGameInternational = ({ isObserver }: Props) => {
       }
     }
   }, [isLoaded]);
+  useEffect(() => { 
+    if (mapRef.current === null) return;
+    for (const obsMarker of observingMarkerArray) { 
+      const foundMarker = observerMarkerArrayRef.current.find((m) => m.getTitle() === obsMarker.requester.name);
+      if (foundMarker) {
+        foundMarker.setPosition(new google.maps.LatLng(obsMarker.lat, obsMarker.lng));
+      } else { 
+        const marker = new google.maps.Marker({
+          position: new google.maps.LatLng(obsMarker.lat, obsMarker.lng),
+          title: obsMarker.requester.name,
+          map: mapRef.current,
+        })
+        observerMarkerArrayRef.current.push(
+
+        )
+        const info = new google.maps.InfoWindow({
+          content: `
+          <div style="padding: 8px; border: 2px solid black; border-radius: 2rem; text-align: center;">
+            <h3>${obsMarker.requester.name}</h3>
+          </div>
+          `,
+        })
+        marker.addListener("mouseover", () => { 
+          if (mapRef.current && mapRef.current instanceof google.maps.Map && marker instanceof google.maps.Marker) { 
+            info.open({
+              anchor: marker,
+              map: mapRef.current
+            });
+          }
+        })
+        marker.addListener("mouseout", () => {
+          info.close();
+        })
+      }
+    }
+  }, [observingMarkerArray])
   return (
     <div>
       {isObserver && <>
         <ObserverMapContent id="obsmap">
         </ObserverMapContent>
-        <ChattingInput></ChattingInput>
       </>}
       {!isObserver && <>
       <MapContent id="map" isExpand={isExpand}> 
@@ -109,8 +162,7 @@ export const MultiGameInternational = ({ isObserver }: Props) => {
         </CustomButton>
       </div>
       <DecisionButton isExpand={isExpand} isReset={true} onClick={() => {
-        if (initialPosition.current === null) { return; }
-        panoRef.current?.setPosition(initialPosition.current);
+        panoRef.current?.setPosition(new google.maps.LatLng(problemPosition!.lat, problemPosition!.lng));
       }}>
         <GrPowerReset />
       </DecisionButton>
