@@ -134,6 +134,7 @@ public class GameService {
             String key = "member_" + player.getId();
             PlayerInfo playerInfo = getRedisValue(key, PlayerInfo.class);
             MarkerRequest answer = playerInfo.getAnswerMarkers()[currentRound];
+            answer.setRequester(player);
             double distance = distanceCalculator.calculateDistance(problem.getLat(), problem.getLng(), answer.getLat(), answer.getLng(), "meter");
             Score score = new Score();
             score.setAnswer(answer);
