@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion';
 import * as Style from './GameEnterBtn.Styled';
 
-const GameEnterBtn = () => {
+const GameEnterBtn = ({ color, onClick }: any) => {
   return (
-    <Style.GameEnterBtnWrapper>
+    <Style.GameEnterBtnWrapper color={color} onClick={onClick}>
       <motion.div
         className="container"
         whileHover={{ scale: 1.2, rotate: 90 }}

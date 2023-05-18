@@ -6,22 +6,9 @@ import { useUserStore } from '../../../store/userStore';
 const GameConnect = ({ roomCode, setRoomCode, callback }: any) => {
   const connection = useUserStore((state) => state.connection);
   const setConnection = useUserStore((state) => state.setConnection);
+  const id = useUserStore((state) => state.id);
+  const name = useUserStore((state) => state.name);
   const [subscription, setSubscription] = useState<any | null>(null);
-  useEffect(() => {
-    if (roomCode == null) {
-      axios
-        .get('http://localhost:8080/api/room/create', {
-          withCredentials: true,
-        })
-        .then((response) => {
-          console.log(response.data);
-          setRoomCode(response.data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-  }, []);
 
   useEffect(() => {
     if (roomCode != null) {
@@ -47,7 +34,7 @@ const GameConnect = ({ roomCode, setRoomCode, callback }: any) => {
     if (connection != null) {
       console.log(`/topic/${roomCode}`);
       connection.onConnect = function (frame: any) {
-        console.log('ok');
+        console.log('Connect Success!');
         setSubscription(connection.subscribe(`/topic/${roomCode}`, callback));
         // Do something, all subscribes must be done is this callback
         // This is needed because this will be executed after a (re)connect
@@ -71,7 +58,7 @@ const GameConnect = ({ roomCode, setRoomCode, callback }: any) => {
       connection.publish({
         destination: `/pub/room/${roomCode}/enter`,
         body: JSON.stringify({
-          requesterId: 1,
+          requester: { id: id, name: name },
         }),
       });
     }
