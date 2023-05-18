@@ -18,6 +18,7 @@ export enum TMessageCode {
   IN_ROUND = "IN_ROUND",
   ROUND_RESULT = "ROUND_RESULT",
   FINAL_RESULT = "FINAL_RESULT",
+  WAITING = "WAITING",
 };
 
 export type TPlayer = {
@@ -26,12 +27,13 @@ export type TPlayer = {
 }
 export type TRound = {
   roundOrder: number;
+  problem: TMarkerRequest;
   scores: Array<TScore>;
 }
 
 export type TScore = {
-  player: TPlayer;
-  point: number;
+  answer: TMarkerRequest;
+  distance: number;
 }
 
 export type TBroadcastMessage<T> = {

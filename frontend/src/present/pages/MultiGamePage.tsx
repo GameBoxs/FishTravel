@@ -14,6 +14,7 @@ import { useUserStore } from '../../store/userStore';
 import { Client, Message } from '@stomp/stompjs';
 import GameConnect from '../component/gamelobby/GameConnect';
 import { Loading } from '../layout/multi/Loading';
+import { MultiWaitingPage } from '../layout/multi/MultiWaitingPage';
 type Props = {};
 type TGameSetting = {
   gameStage: number;
@@ -25,6 +26,7 @@ type TGameSetting = {
 type TGameData = TGameInfo & {
   isObserver: boolean;
   problemPosition: TMarkerRequest | null;
+  submittedPosition: TMarkerRequest | null;
   rankingArray: Array<TRanking> | null;
   setGameInfo: (value: TGameInfo) => void;
   setRoomId: (value: string) => void;
@@ -36,7 +38,9 @@ type TGameData = TGameInfo & {
   setRounds: (value: Array<TRound>) => void;
   setIsObserver: (value: boolean) => void;
   setProblemPosition: (value: TMarkerRequest) => void;
+  setSubmittedPosition: (value: TMarkerRequest) => void;
   setRankingArray: (value: Array<TRanking>) => void;
+  refreshRanking: () => void;
 };
 
 export const useGameSettingStore = create<TGameSetting>((set, get) => ({
@@ -47,7 +51,7 @@ export const useGameSettingStore = create<TGameSetting>((set, get) => ({
   setIsDomestic: (value: boolean) => set((state) => ({ ...state, isDomestic: value })),
 }));
 
-export const useGameInfoStore = create<TGameData>((set) => ({
+export const useGameInfoStore = create<TGameData>((set, get) => ({
   code: null,
   domestic: false,
   managerId: 1,
@@ -57,6 +61,7 @@ export const useGameInfoStore = create<TGameData>((set) => ({
   rounds: [],
   isObserver: false,
   problemPosition: null,
+  submittedPosition: null,
   rankingArray: null,
   setGameInfo: (value: TGameInfo) => set((state) => ({ ...state, ...value })),
   setRoomId: (value: string) => set((state) => ({ ...state, roomId: value })),
@@ -68,7 +73,15 @@ export const useGameInfoStore = create<TGameData>((set) => ({
   setRounds: (value: Array<TRound>) => set((state) => ({ ...state, round: value })),
   setIsObserver: (value: boolean) => set((state) => ({ ...state, isObserver: value })),
   setProblemPosition: (value: TMarkerRequest) => set((state) => ({ ...state, problemPosition: value })),
+  setSubmittedPosition: (value: TMarkerRequest) => set((state) => ({ ...state, ...(Number(useUserStore.getState().id) === value.requester.id && {code: "WAITING" as TMessageCode, submittedPosition: value}) })),
   setRankingArray: (value: Array<TRanking>) => set((state) => ({ ...state, rankingArray: value })),
+  refreshRanking: () => set((state) => ({
+    ...state,
+    rankingArray: state.rankingArray!.map((r) => ({
+      ...r,
+      scoreSum: r.scoreSum + state.rounds!.at(-1)!.scores.filter((s) => s.answer.requester.id === r.player.id)[0]?.distance,
+    })).sort((a, b) => a.scoreSum < b.scoreSum ? 1 : a.scoreSum === b.scoreSum ? 0 : -1 ),
+  }))
 }));
 export const MultiGamePage = (props: Props) => {
   const gameInfo = useGameInfoStore();
@@ -81,8 +94,13 @@ export const MultiGamePage = (props: Props) => {
   const { id } = useUserStore();
   const callback = (message: Message) => {
     const body = JSON.parse(message.body);
-    if (body.code === 'GAME_START' && gameInfo.players !== null) {
-      gameInfo.setRankingArray(gameInfo.players.map((p) => ({ player: p, scoreSum: 0 })));
+    console.log(body);
+    console.log(id);
+    if (body.code ==="ANSWER") { 
+      gameInfo.setSubmittedPosition(body.data);
+    }
+    if (body.code === 'GAME_START') {
+      gameInfo.setRankingArray(body.data.players.map((p: TPlayer) => ({ player: p, scoreSum: 0 })));
     }
     if (body.code === 'IN_ROUND') {
       gameInfo.setCode(TMessageCode.IN_ROUND);
@@ -98,14 +116,8 @@ export const MultiGamePage = (props: Props) => {
     }
     if (body.code === 'ROUND_RESULT') {
       //  라운드 결과창에서 가장 최근의 라운드 결과 값 가산.
-      gameInfo.setRankingArray(
-        gameInfo
-          .rankingArray!.map((r) => ({
-            ...r,
-            scoreSum: r.scoreSum + gameInfo.rounds!.at(-1)!.scores.filter((s) => s.player.id === r.player.id)[0].point,
-          }))
-          .sort(),
-      );
+      console.log(gameInfo.rankingArray);
+      gameInfo.refreshRanking();
     }
   };
   useEffect(() => {
@@ -130,6 +142,9 @@ export const MultiGamePage = (props: Props) => {
       {gameInfo.code === TMessageCode.ROUND_RESULT && (
         <MultiGameResult isDomestic={gameInfo.domestic} isLoaded={isLoadedState} />
       )}
+      {gameInfo.code === TMessageCode.WAITING && (
+        <MultiWaitingPage isLoaded={isLoadedState} />
+      ) }
     </div>
   );
 };

@@ -6,6 +6,9 @@ import useLoadScript from "../../../action/hooks/useLoadScript";
 import { Timer } from "../../component/multi/Timer";
 import { Ranking } from "../../component/multi/Ranking";
 import { useGameInfoStore } from "../../pages/MultiGamePage";
+import { useUserStore } from "../../../store/userStore";
+import { Client } from "@stomp/stompjs";
+import { TMessageCode } from "../../pages";
 type Props = {
   isObserver: boolean,
 };
@@ -17,8 +20,27 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
   const chatRef = useRef<HTMLInputElement>(null);
   const markerRef = useRef<naver.maps.Marker | null>(null);
   const [isExpand, setIsExpand] = useState(false);
-  const { problemPosition } = useGameInfoStore();
+  const { problemPosition, roomId, setCode } = useGameInfoStore();
+  const { connection, name, id } = useUserStore();
   const handleConfirmLocation = () => { 
+    const pos = markerRef.current?.getPosition();
+    if (markerRef.current && pos) {
+      console.log(markerRef.current);
+      (connection as Client).publish({
+        destination: `/pub/room/${roomId}/answer`,
+        body: JSON.stringify({
+          name: name,
+          lat: pos.y,
+          lng: pos.x,
+          requester: {
+            id: id,
+            name: name
+          }
+        })
+      })
+    } else { 
+      alert("위치를 선택하고 확정 버튼을 눌러주세요.");
+    }
   }
   const handleChatting = (e: React.KeyboardEvent<HTMLInputElement>) => { 
     if (e.key == 'Enter') {
@@ -134,7 +156,7 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
           </div>
       </React.Fragment> }
       <Timer initialTime={100} />
-      <Ranking isDomestic={true} />
+      {/* <Ranking isDomestic={true} /> */}
     </div>
   );
 };

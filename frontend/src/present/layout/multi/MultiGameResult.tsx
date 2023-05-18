@@ -15,14 +15,12 @@ export type LatLng = {
   lng: number;
 }
 export const MultiGameResult = ({ isDomestic, isLoaded }: Props) => {
-  const [answerPosition, setAnswerPosition] = useState<LatLng>({ nickname:"김덕배", lat: 37.3599605, lng: 127.1058814 });
-  const [selectedPosition, setSelectedPosition] = useState<Array<LatLng>>([{ nickname:"김덕배", lat: 37.3699605, lng: 127.1058814 },{ nickname:"이창민", lat: 37.3999605, lng: 127.1158814 },{ nickname:"임수민", lat: 37.3499605, lng: 127.1558814 }]);
   return (
     <div>
       <ResultContainer>
         <ResultContent>
           <ResultMapContent>
-            <RankingMap id="map" answerPosition={answerPosition} selectedPosition={selectedPosition} isLoaded={isLoaded} />
+            <RankingMap id="map" isLoaded={isLoaded} isDomestic={isDomestic} />
           </ResultMapContent>
           <ResultRankingContent>
             <RankingPodium />
