@@ -2,6 +2,7 @@ package com.carassius.fallenfish.domain.game.service;
 
 import com.carassius.fallenfish.common.util.DistanceCalculator;
 import com.carassius.fallenfish.common.util.RandomId;
+import com.carassius.fallenfish.domain.answer_marker.entity.AnswerMarker;
 import com.carassius.fallenfish.domain.game.dto.*;
 import com.carassius.fallenfish.domain.game.entity.MessageCode;
 import com.carassius.fallenfish.domain.member.entity.Member;
@@ -25,6 +26,9 @@ public class GameService {
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
     private final DistanceCalculator distanceCalculator;
+
+    private final double[][] domesticLocations = {{35.834706853813366, 129.21862387497592}, {35.159697612693876, 129.1615279149234}, {35.852761505162896, 128.56653392221193}, {33.45930351568051, 126.93966579985329}, {37.29161570239798, 127.20470017638027}, {33.49308951552344, 126.96605139997007}};
+    private final double[][] globalLocations = {{35.7144622, 139.7966334}, {40.7487397, -73.9852793}, {42.3621815, -71.0907346}, {51.5058183, -0.075192}, {51.5015884, -0.1410892}, {9.0594112, 7.4903175}};
 
     public void setRedisValue(String key, Object classType) throws JsonProcessingException {
         redisTemplate.opsForValue().set(key, objectMapper.writeValueAsString(classType));
@@ -71,15 +75,15 @@ public class GameService {
         gameInfo.setCode(MessageCode.GAME_START);
         int playerCount = gameInfo.getPlayers().size();
         RoundInfo[] rounds = new RoundInfo[playerCount];
-        for(int i = 0; i < playerCount; i++) {
+        for (int i = 0; i < playerCount; i++) {
             rounds[i] = new RoundInfo();
             rounds[i].setScores(new ArrayList<>());
-            rounds[i].setRoundOrder(i+1);
+            rounds[i].setRoundOrder(i + 1);
         }
         gameInfo.setRounds(rounds);
         setRedisValue(roomId, gameInfo);
 
-        for(Player player : gameInfo.getPlayers()) {
+        for (Player player : gameInfo.getPlayers()) {
             PlayerInfo playerInfo = new PlayerInfo();
             playerInfo.setAnswerMarkers(new MarkerRequest[playerCount]);
             setRedisValue("member_" + player.getId(), playerInfo);
@@ -117,6 +121,19 @@ public class GameService {
         Player player = gameInfo.getPlayers().get(i);
         PlayerInfo playerInfo = getRedisValue("member_" + player.getId(), PlayerInfo.class);
 
+        if(playerInfo.getProblemMarker() == null) {
+            MarkerRequest markerRequest = new MarkerRequest();
+            markerRequest.setRequester(player);
+            if(gameInfo.isDomestic()) {
+                markerRequest.setLat(domesticLocations[i][0]);
+                markerRequest.setLng(domesticLocations[i][1]);
+            } else {
+                markerRequest.setLat(globalLocations[i][0]);
+                markerRequest.setLng(globalLocations[i][1]);
+            }
+            playerInfo.setProblemMarker(markerRequest);
+        }
+
         gameInfo.getRounds()[i].setProblem(playerInfo.getProblemMarker());
 
         setRedisValue(roomId, gameInfo);
@@ -130,12 +147,17 @@ public class GameService {
         RoundInfo roundInfo = gameInfo.getRounds()[currentRound];
         MarkerRequest problem = roundInfo.getProblem();
         List<Player> players = gameInfo.getPlayers();
-        for(Player player : players) {
+        for (Player player : players) {
             String key = "member_" + player.getId();
             PlayerInfo playerInfo = getRedisValue(key, PlayerInfo.class);
             MarkerRequest answer = playerInfo.getAnswerMarkers()[currentRound];
+            double distance = 100000000;
+            if (answer != null) {
+                distance = distanceCalculator.calculateDistance(problem.getLat(), problem.getLng(), answer.getLat(), answer.getLng(), "meter");
+            } else {
+                answer = new MarkerRequest();
+            }
             answer.setRequester(player);
-            double distance = distanceCalculator.calculateDistance(problem.getLat(), problem.getLng(), answer.getLat(), answer.getLng(), "meter");
             Score score = new Score();
             score.setAnswer(answer);
             score.setDistance(distance);
