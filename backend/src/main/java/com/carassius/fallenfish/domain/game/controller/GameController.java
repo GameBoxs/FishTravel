@@ -16,6 +16,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
@@ -26,9 +27,9 @@ public class GameController {
 
     // 방 생성하기 - RabbitMQ에 사용할 방 랜덤ID를 생성해서 방장에게 전달한다.
     @GetMapping("/room/create")
-    public ResponseEntity<?> createGameRoom() throws JsonProcessingException {
+    public ResponseEntity<?> createGameRoom(@RequestParam("domestic") boolean domestic) throws JsonProcessingException {
         //TODO: 방장 ID 추출
-        String roomId = gameService.createGameRoom(1L);
+        String roomId = gameService.createGameRoom(1L, domestic);
         return new ResponseEntity<>(roomId, HttpStatus.OK);
     }
 
