@@ -1,27 +1,26 @@
 import { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { LatLng } from "../../layout/multi/MultiGameResult";
-import { useGameSettingStore } from "../../pages/MultiGamePage";
+import { useGameInfoStore, useGameSettingStore } from "../../pages/MultiGamePage";
 
 type Props = {
-  answerPosition: LatLng,
-  selectedPosition: Array<LatLng>,
-  id: string
-  isLoaded: string
+  id: string;
+  isLoaded: string;
+  isDomestic: boolean;
 };
 
 const answerIconPic = "https://cdn-icons-png.flaticon.com/64/5695/5695118.png";
 const selectedIconPic = "https://cdn-icons-png.flaticon.com/64/5695/5695123.png";
 
-export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Props) => {
+export const RankingMap = ({ id, isLoaded, isDomestic }: Props) => {
   const mapRef = useRef<naver.maps.Map | google.maps.Map | null>(null);
   const markerArrRef = useRef<naver.maps.Marker[] | google.maps.Marker[] | null>(null);
   const infoWindowArrRef = useRef<naver.maps.InfoWindow[] | google.maps.InfoWindow[] | null>(null);
   const polylineArrRef = useRef<naver.maps.Polyline[] | google.maps.Polyline[] | null>(null);
-  const { isDomestic } = useGameSettingStore();
+  const { rounds } = useGameInfoStore();
   useEffect(() => { 
     if (isLoaded !== "ready") return; 
-    if (isDomestic && naver.maps.Map) {
+    if (isDomestic && naver.maps.Map && rounds) {
       // 네이버 지도를 보여줘야 하는 경우
       mapRef.current = new naver.maps.Map(id, {
         center: new naver.maps.LatLng(36.1146, 128.3645)
@@ -29,9 +28,9 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
       markerArrRef.current = new Array<naver.maps.Marker>;
       polylineArrRef.current = new Array<naver.maps.Polyline>;
       infoWindowArrRef.current = new Array<naver.maps.InfoWindow>;
-      for (const pos of selectedPosition) { 
+      for (const pos of rounds.at(-1)?.scores!) { 
         const marker = new naver.maps.Marker({
-          position: new naver.maps.LatLng(pos.lat, pos.lng),
+          position: new naver.maps.LatLng(pos.answer.lat, pos.answer.lng),
           map: mapRef.current,
           visible: true,
           icon: {
@@ -44,8 +43,7 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
         const info = new naver.maps.InfoWindow({
           content: `
           <div style="padding: 8px; border: 2px solid black; border-radius: 2rem; text-align: center;">
-            <h3>${pos.nickname}</h3>
-            <h3>${pos.lat}</h3>
+            <h3>${pos.answer.requester.name}</h3>
           </div>
           `,
           borderWidth: 0,
@@ -65,7 +63,7 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
         polylineArrRef.current.push(
           new naver.maps.Polyline({
             map: mapRef.current,
-            path: [new naver.maps.LatLng(pos.lat, pos.lng), new naver.maps.LatLng(answerPosition.lat, answerPosition.lng)],
+            path: [new naver.maps.LatLng(pos.answer.lat, pos.answer.lng), new naver.maps.LatLng(rounds.at(-1)!.problem.lat, rounds.at(-1)!.problem.lng)],
             strokeColor: "#000000",
             strokeStyle: "shortdash",
             strokeWeight: 4,
@@ -74,7 +72,7 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
       }
       markerArrRef.current.push(
         new naver.maps.Marker({
-          position: new naver.maps.LatLng(answerPosition.lat, answerPosition.lng),
+          position: new naver.maps.LatLng(rounds.at(-1)!.problem.lat, rounds.at(-1)!.problem.lng),
           map: mapRef.current,
           visible: true,
           icon: {
@@ -84,7 +82,7 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
         })
       )
       mapRef.current.fitBounds(markerArrRef.current.map((m) => m.getPosition()));
-    } else if (!isDomestic && google.maps.Map) { 
+    } else if (!isDomestic && google.maps.Map && rounds) { 
       // 구글 지도를 보여줘야 하는 경우
       mapRef.current = new google.maps.Map(document.getElementById(id) as HTMLElement, {
         center: new google.maps.LatLng(36.1146, 128.3645),
@@ -102,10 +100,10 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
         strokeOpacity: 1,
         scale: 4,
       };
-      for (const pos of selectedPosition) { 
+      for (const pos of rounds.at(-1)?.scores!) { 
         markerArrRef.current?.push(
           new google.maps.Marker({
-            position: new google.maps.LatLng(pos.lat, pos.lng),
+            position: new google.maps.LatLng(pos.answer.lat, pos.answer.lng),
             map: mapRef.current,
             visible: true,
             icon: {
@@ -123,7 +121,7 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
           new google.maps.Polyline(
             {
               map: mapRef.current,
-              path: [{ lat: pos.lat, lng: pos.lng }, { lat: answerPosition.lat, lng: answerPosition.lng }],
+              path: [{ lat: pos.answer.lat, lng: pos.answer.lng }, { lat: rounds.at(-1)!.problem.lat, lng: rounds.at(-1)!.problem.lng }],
               strokeColor: "#000000",
               strokeOpacity: 0,
               strokeWeight: 4,
@@ -140,7 +138,7 @@ export const RankingMap = ({answerPosition, selectedPosition, id, isLoaded }: Pr
       }
       markerArrRef.current.push(
         new google.maps.Marker({
-          position: new google.maps.LatLng(answerPosition.lat, answerPosition.lng),
+          position: new google.maps.LatLng(rounds.at(-1)!.problem.lat, rounds.at(-1)!.problem.lng),
           map: mapRef.current,
           visible: true,
           icon: {

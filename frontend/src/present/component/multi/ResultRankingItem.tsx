@@ -1,16 +1,18 @@
 import styled from "styled-components";
+import { TRanking } from "../../pages";
 
 type Props = {
-  
+  index: number
+  rank: TRanking;
 };
-export const ResultRankingItem = (props: Props) => {
+export const ResultRankingItem = ({index, rank}: Props) => {
   return (
     <ResultRankingItemContainer>
-      <RankText>1</RankText>
+      <RankText>{index}</RankText>
       <ResultRankingItemContent>
-        <IconItem src="https://picsum.photos/250/250"></IconItem>
-        <NicknameText>닉네임</NicknameText>
-        <ScoreText>점수</ScoreText>
+        <IconItem src="https://cdn-icons-png.flaticon.com/128/149/149071.png"></IconItem>
+        <NicknameText>{rank.player.name}</NicknameText>
+        <ScoreText>{rank.scoreSum}</ScoreText>
       </ResultRankingItemContent>
     </ResultRankingItemContainer>
   );
