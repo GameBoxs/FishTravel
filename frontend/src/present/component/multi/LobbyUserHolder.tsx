@@ -1,16 +1,16 @@
 import styled from "styled-components";
+import { useGameInfoStore } from "../../pages/MultiGamePage";
 import { LobbyUserItem } from "./LobbyUserItem";
 
 type Props = {
   
 };
 export const LobbyUserHolder = (props: Props) => {
+  const { players } = useGameInfoStore();
   return (
     <UserHolderContainer>
-      <LobbyUserItem />
-      <LobbyUserItem />
-      <LobbyUserItem />
-      <LobbyUserItem />
+      {players?.map((p) => <LobbyUserItem id={p.id} name={p.name} isInviter={false} />)}
+      {players!.length < 6 && <LobbyUserItem id={0} name={""} isInviter={true} />}
     </UserHolderContainer>
   );
 };

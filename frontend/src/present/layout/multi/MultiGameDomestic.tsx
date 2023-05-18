@@ -5,7 +5,7 @@ import { GrPowerReset } from "react-icons/gr";
 import useLoadScript from "../../../action/hooks/useLoadScript";
 import { Timer } from "../../component/multi/Timer";
 import { Ranking } from "../../component/multi/Ranking";
-import { useGameSettingStore } from "../../pages/MultiGamePage";
+import { useGameInfoStore } from "../../pages/MultiGamePage";
 type Props = {
   isObserver: boolean,
 };
@@ -17,10 +17,8 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
   const chatRef = useRef<HTMLInputElement>(null);
   const markerRef = useRef<naver.maps.Marker | null>(null);
   const [isExpand, setIsExpand] = useState(false);
-  const initialPosition = useRef<naver.maps.LatLng | null>(null);
-  const { setGameStage } = useGameSettingStore();
+  const { problemPosition } = useGameInfoStore();
   const handleConfirmLocation = () => { 
-    setGameStage(3);
   }
   const handleChatting = (e: React.KeyboardEvent<HTMLInputElement>) => { 
     if (e.key == 'Enter') {
@@ -31,13 +29,12 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
   useEffect(() => {
     // Naver Map API js 파일 로딩 전에는 로직 수행하지 않음.
     if (isLoaded !== "ready") return;
-    initialPosition.current = new naver.maps.LatLng(37.3599605, 127.1058814);
     if (isObserver) { 
-      if (mapRef.current === null) {
+      if (mapRef.current === null && problemPosition !== null) {
         mapRef.current = new naver.maps.Map(
           document.getElementById("obsmap") as HTMLElement,
           {
-            center: initialPosition.current,
+            center: new naver.maps.LatLng(problemPosition.lat, problemPosition.lng),
             zoom: 3,
             scaleControl: false,
           }
@@ -45,11 +42,11 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
       }
     }
     else { 
-      if (naver.maps.Panorama) { 
+      if (naver.maps.Panorama && problemPosition !== null) { 
         panoRef.current = new naver.maps.Panorama(
           document.getElementById("pano") as HTMLElement,
           {
-            position: initialPosition.current ? initialPosition.current : new naver.maps.LatLng(33, 128),
+            position: new naver.maps.LatLng(problemPosition.lat, problemPosition.lng),
             flightSpot: false,
           }
         );
@@ -61,13 +58,15 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
       // submodule 포함해서 js 파일 다 로딩되었으면 파노라마 객체 초기화 하도록 설정.
       (naver.maps as any).onJSContentLoaded = () => { 
         // 파노라마(스트리트 뷰) 객체 초기화
-        panoRef.current = new naver.maps.Panorama(
-          document.getElementById("pano") as HTMLElement,
-          {
-            position: initialPosition.current ? initialPosition.current : new naver.maps.LatLng(33, 128),
-            flightSpot: false,
-          }
-        );
+        if (problemPosition !== null) { 
+          panoRef.current = new naver.maps.Panorama(
+            document.getElementById("pano") as HTMLElement,
+            {
+              position: new naver.maps.LatLng(problemPosition.lat, problemPosition.lng),
+              flightSpot: false,
+            }
+          );
+        }
         // 파노라마 객체 초기화 이벤트 트리거되면, visible 하도록 설정.
         naver.maps.Event.addListener(panoRef.current, "init", () => { 
           panoRef.current?.setVisible(true);
@@ -75,11 +74,11 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
       }
       
       // 지도 객체 없으면 초기화
-      if (mapRef.current === null) { 
+      if (mapRef.current === null&& problemPosition !== null) { 
         mapRef.current = new naver.maps.Map(
           document.getElementById("map") as HTMLElement,
           {
-            center: initialPosition.current,
+            center: new naver.maps.LatLng(problemPosition.lat, problemPosition.lng),
             zoom: 1,
             scaleControl: false,
           }
@@ -119,8 +118,9 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
           <StreetViewContent id="pano">
           </StreetViewContent>
           <DecisionButton isExpand={isExpand} isReset={true} onClick={() => {
-            if (initialPosition.current === null) { return; }
-            panoRef.current?.setPosition(initialPosition.current);
+            if (problemPosition !== null) { 
+              panoRef.current?.setPosition(new naver.maps.LatLng(problemPosition.lat, problemPosition.lng));
+            }
           }}>
             <GrPowerReset />
           </DecisionButton>
@@ -133,7 +133,7 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
             </CustomButton>
           </div>
       </React.Fragment> }
-      <Timer isDomestic={true} />
+      <Timer initialTime={100} />
       <Ranking isDomestic={true} />
     </div>
   );

@@ -1,9 +1,7 @@
 package com.carassius.fallenfish.domain.game.service;
 
 import com.carassius.fallenfish.common.util.RandomId;
-import com.carassius.fallenfish.domain.game.dto.GameInfo;
-import com.carassius.fallenfish.domain.game.dto.Player;
-import com.carassius.fallenfish.domain.game.dto.PlayerRequest;
+import com.carassius.fallenfish.domain.game.dto.*;
 import com.carassius.fallenfish.domain.game.entity.MessageCode;
 import com.carassius.fallenfish.domain.member.entity.Member;
 import com.carassius.fallenfish.domain.member.repository.MemberRepository;
@@ -65,4 +63,62 @@ public class GameService {
         return roomId;
     }
 
+    // 게임 시작 신호 - 라운드 초기화 및 플레이어 REDIS 띄우기
+    public GameInfo startGame(String roomId) throws JsonProcessingException {
+        GameInfo gameInfo = getRedisValue(roomId, GameInfo.class);
+        gameInfo.setCode(MessageCode.GAME_START);
+        int playerCount = gameInfo.getPlayers().size();
+        RoundInfo[] rounds = new RoundInfo[playerCount];
+        for(int i = 0; i < playerCount; i++) {
+            rounds[i] = new RoundInfo();
+        }
+        gameInfo.setRounds(rounds);
+        setRedisValue(roomId, gameInfo);
+
+        for(Player player : gameInfo.getPlayers()) {
+            PlayerInfo playerInfo = new PlayerInfo();
+            playerInfo.setAnswerMarkers(new MarkerRequest[playerCount]);
+            setRedisValue("member_" + player.getId(), playerInfo);
+        }
+
+        return gameInfo;
+    }
+
+    public GameInfo startPickFish(String roomId) throws JsonProcessingException {
+        GameInfo gameInfo = getRedisValue(roomId, GameInfo.class);
+        gameInfo.setCode(MessageCode.PICK_FISH);
+        setRedisValue(roomId, gameInfo);
+        return gameInfo;
+    }
+
+    public void pickFish(MarkerRequest markerRequest, String roomId) throws JsonProcessingException {
+        String key = "member_" + markerRequest.getRequester().getId();
+        PlayerInfo playerInfo = getRedisValue(key, PlayerInfo.class);
+        playerInfo.setProblemMarker(markerRequest);
+        setRedisValue(key, playerInfo);
+    }
+
+    public GameInfo waitForNextRound(String roomId) throws JsonProcessingException {
+        GameInfo gameInfo = getRedisValue(roomId, GameInfo.class);
+        gameInfo.setCode(MessageCode.WAIT_FOR_NEXT_ROUND);
+        setRedisValue(roomId, gameInfo);
+        return gameInfo;
+    }
+
+    public MarkerRequest startRound(String roomId, int i) throws JsonProcessingException {
+        GameInfo gameInfo = getRedisValue(roomId, GameInfo.class);
+        gameInfo.setCode(MessageCode.IN_ROUND);
+        setRedisValue(roomId, gameInfo);
+
+        Player player = gameInfo.getPlayers().get(i);
+        PlayerInfo playerInfo = getRedisValue("member_" + player.getId(), PlayerInfo.class);
+        return playerInfo.getProblemMarker();
+    }
+
+    public GameInfo endRound(String roomId) throws JsonProcessingException {
+        GameInfo gameInfo = getRedisValue(roomId, GameInfo.class);
+        gameInfo.setCode(MessageCode.ROUND_RESULT);
+        setRedisValue(roomId, gameInfo);
+        return gameInfo;
+    }
 }

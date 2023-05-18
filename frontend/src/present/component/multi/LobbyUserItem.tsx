@@ -1,13 +1,28 @@
 import styled from "styled-components";
 
 type Props = {
-  
+  id: number,
+  name: string,
+  isInviter: boolean,
 };
-export const LobbyUserItem = (props: Props) => {
+export const LobbyUserItem = ({ id, name, isInviter }: Props) => {
+  const handleInvite = () => { 
+    navigator.clipboard.writeText(window.location.href).then((cliptext) => { 
+      alert("현재 방의 URL이 복사되었습니다. 친구에게 공유해보세요!");
+    })
+  }
   return (
     <UserContainer>
-      <IconItem src="https://cdn-icons-png.flaticon.com/128/149/149071.png" />
-      <TextItem>아이디</TextItem>
+      {!isInviter &&
+        <>
+        <IconItem src="https://cdn-icons-png.flaticon.com/128/149/149071.png" />
+        <TextItem>{name}</TextItem>
+        </>
+      }
+      {isInviter && <>
+        <InviteButton src="https://cdn-icons-png.flaticon.com/512/1057/1057240.png" onClick={handleInvite} />
+        <TextItem>초대하기</TextItem>
+      </>}
     </UserContainer>
   );
 };
@@ -33,5 +48,13 @@ const IconItem = styled.img`
   border: 4px solid #146C94;
 `
 const TextItem = styled.span`
-  color: black
+  color: black;
+`
+const InviteButton = styled.img`
+  position: relative;
+  width: 15vh;
+  max-height: 15vh;
+  height: auto;
+  border-radius: 50%;
+  border: 4px solid #146C94;
 `
