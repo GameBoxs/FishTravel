@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class GameController {
     private final SimpMessageSendingOperations simpMessageSendingOperations;
-    private final RedisTemplate<String, Object> redisTemplate;
-    private final ObjectMapper objectMapper;
     private final GameService gameService;
 
     // 방 생성하기 - RabbitMQ에 사용할 방 랜덤ID를 생성해서 방장에게 전달한다.
@@ -81,16 +79,16 @@ public class GameController {
                 .build();
         simpMessageSendingOperations.convertAndSend("/topic/" + roomId, broadcastMessage);
 
-        wait(5000);
+        wait(7000);
 
         // TODO: 마커 안찍은놈 랜덤 마커 처리
 
         RoundInfo[] rounds = gameInfo.getRounds();
 
         for(int i = 0; i < rounds.length; i++) {
-            System.out.println("라운드 = " + i+1);
+            System.out.println("라운드 = " + (i+1));
             // 1. 라운드 시작 대기
-            gameInfo = gameService.waitForNextRound(roomId);
+            gameInfo = gameService.waitForNextRound(roomId, i+1);
             broadcastMessage = BroadcastMessage.<GameInfo>builder()
                     .code(MessageCode.WAIT_FOR_NEXT_ROUND)
                     .data(gameInfo)
@@ -98,7 +96,7 @@ public class GameController {
             simpMessageSendingOperations.convertAndSend("/topic/" + roomId, broadcastMessage);
 
             // 2. 5초
-            wait(5000);
+            wait(7000);
 
             // 3. 라운드 시작 신호
             MarkerRequest markerRequest = gameService.startRound(roomId, i);
@@ -109,10 +107,10 @@ public class GameController {
             simpMessageSendingOperations.convertAndSend("/topic/" + roomId, roundMessage);
 
             // 4. n초동안 문제를 풉니다.
-            wait(5000);
+            wait(7000);
 
             // 5. 라운드 종료 신호
-            gameInfo = gameService.endRound(roomId);
+            gameInfo = gameService.endRound(roomId, i);
             broadcastMessage = BroadcastMessage.<GameInfo>builder()
                     .code(MessageCode.ROUND_RESULT)
                     .data(gameInfo)
@@ -120,9 +118,10 @@ public class GameController {
             simpMessageSendingOperations.convertAndSend("/topic/" + roomId, broadcastMessage);
 
             // 6. n초 동안 결과보여주고
-            wait(5000);
+            wait(7000);
             // 7번으로 되돌아감
         }
+        System.out.println(roomId + " : 게임 종료");
         simpMessageSendingOperations.convertAndSend("/topic/" + roomId, "다 끝났다");
         // TODO: 최종 결과 및 종료
     }
@@ -133,4 +132,13 @@ public class GameController {
         // TODO: 전파하기
     }
 
+    @MessageMapping("/room/{roomId}/answer")
+    public void pubAnswer(@Payload MarkerRequest markerRequest, @DestinationVariable String roomId) throws JsonProcessingException {
+        gameService.submitAnswer(markerRequest, roomId);
+        BroadcastMessage<MarkerRequest> broadcastMessage = BroadcastMessage.<MarkerRequest>builder()
+                .code(MessageCode.ANSWER)
+                .data(markerRequest)
+                .build();
+        simpMessageSendingOperations.convertAndSend("/topic/" + roomId, broadcastMessage);
+    }
 }
