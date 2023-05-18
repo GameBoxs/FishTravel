@@ -9,7 +9,7 @@ export const ResultNextBtn = styled.div`
     position: relative;
     top: 90%;
     /* bottom: 0%; */
-    left: 44%;
+    left: 42%;
     text-align: center;
     line-height: 35px;
     font-weight: 900;
@@ -61,7 +61,7 @@ export const ResultInfo = styled.div`
     left: 30%;
     bottom: 15%;
     display: grid;
-    grid-template-columns: 50% 50%;
+    grid-template-columns: 100%;
     grid-template-rows: 20% 80%;
 `
 
