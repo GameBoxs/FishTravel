@@ -1,14 +1,24 @@
 export type TGameInfo = {
   roomId: string;
-  code: MessageCode;
-  isDomestic: boolean;
+  code: TMessageCode | null;
   managerId: number;
   maxPlayers: number;
-  players: Array<TPlayer>;
-  round: Array<TRound>;
+  players: Array<TPlayer> | null;
+  rounds: Array<TRound> | null;
+  domestic: boolean;
 }
 
-export enum TMessageCode { CHAT, ENTER, LOBBY, GAME_START, PICK_FISH, WAIT_FOR_NEXT_ROUND, IN_ROUND, ROUND_RESULT, FINAL_RESULT };
+export enum TMessageCode {
+  CHAT = "CHAT",
+  ENTER = "ENTER",
+  LOBBY = "LOBBY",
+  GAME_START = "GAME_START",
+  PICK_FISH = "PICK_FISH",
+  WAIT_FOR_NEXT_ROUND = "WAIT_FOR_NEXT_ROUND",
+  IN_ROUND = "IN_ROUND",
+  ROUND_RESULT = "ROUND_RESULT",
+  FINAL_RESULT = "FINAL_RESULT",
+};
 
 export type TPlayer = {
   id: number;
@@ -20,8 +30,8 @@ export type TRound = {
 }
 
 export type TScore = {
+  player: TPlayer;
   point: number;
-  memberId: number;
 }
 
 export type TBroadcastMessage<T> = {
@@ -35,4 +45,9 @@ export type TMarkerRequest = TPlayerRequest & {
 }
 export type TPlayerRequest = {
   requester: TPlayer;
+}
+
+export type TRanking = {
+  player: TPlayer,
+  scoreSum: number,
 }
