@@ -46,7 +46,7 @@ public class GameService {
         return gameInfo;
     }
 
-    public String createGameRoom(Long managerId) throws JsonProcessingException {
+    public String createGameRoom(Long managerId, boolean domestic) throws JsonProcessingException {
         RandomId randomId = new RandomId(10);
         String roomId = randomId.nextString();
         System.out.println("GameRoom Created roomId = " + roomId);
@@ -57,7 +57,7 @@ public class GameService {
         gameInfo.setManagerId(managerId);
         gameInfo.setMaxPlayers(6);
         // TODO: 국내 고정
-        gameInfo.setDomestic(true);
+        gameInfo.setDomestic(domestic);
         List<Player> players = new ArrayList<>();
         gameInfo.setPlayers(players);
 
