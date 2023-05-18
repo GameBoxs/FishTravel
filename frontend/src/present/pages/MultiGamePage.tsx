@@ -92,6 +92,7 @@ export const MultiGamePage = (props: Props) => {
   );
   const params = useParams();
   const { id } = useUserStore();
+  const [postMessage, setPostMessage] = useState<any>('');
   const callback = (message: Message) => {
     const body = JSON.parse(message.body);
     console.log(body);
@@ -99,8 +100,11 @@ export const MultiGamePage = (props: Props) => {
     if (body.code ==="ANSWER") { 
       gameInfo.setSubmittedPosition(body.data);
     }
-    if (body.code === 'GAME_START') {
-      gameInfo.setRankingArray(body.data.players.map((p: TPlayer) => ({ player: p, scoreSum: 0 })));
+    if (body.code === 'CHAT' && gameInfo.players !== null) {
+      setPostMessage(body.data);
+    }
+    if (body.code === 'GAME_START' && gameInfo.players !== null) {
+      gameInfo.setRankingArray(gameInfo.players.map((p) => ({ player: p, scoreSum: 0 })));
     }
     if (body.code === 'IN_ROUND') {
       gameInfo.setCode(TMessageCode.IN_ROUND);
@@ -132,7 +136,7 @@ export const MultiGamePage = (props: Props) => {
     <div>
       {params.roomCode && <GameConnect roomCode={params.roomCode} callback={callback} />}
       {/* {1 && <MultiGameLobby/>} */}
-      {gameInfo.code === TMessageCode.LOBBY && <MultiGameLobby />}
+      {gameInfo.code === TMessageCode.LOBBY && <MultiGameLobby message={postMessage} />}
       {gameInfo.code === TMessageCode.PICK_FISH && <MultiGamePicker isLoaded={isLoadedState} />}
       {gameInfo.code === TMessageCode.GAME_START && <Loading />}
       {gameInfo.code === TMessageCode.WAIT_FOR_NEXT_ROUND && <MultiGameLoading />}
