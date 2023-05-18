@@ -1,23 +1,21 @@
 import styled from "styled-components";
+import { TRanking } from "../../pages";
 
 type Props = {
-  item: {
-    ranking: number,
-    memberId: string,
-    score: number,
-  }
+  item: TRanking,
+  rank: number
 };
-export const RankingItem = ({ item }: Props) => {
+export const RankingItem = ({ item, rank }: Props) => {
   return (
     <RankingItemContainer>
-      <div style={{ flex: 1}}>{item.ranking}</div>
+      <div style={{ flex: 1}}>{rank}</div>
       <div style={{ flex: 1}}>
         <RankingIcon src="https://cdn-icons-png.flaticon.com/128/149/149071.png" alt="" />
       </div>
       <div style={{ flex: 3, overflow: "hidden", display: "flex", }}>
         <RankingTextContainer>
-          <RankingUserText>{item.memberId}</RankingUserText>
-          <RankingScoreText>{item.score}</RankingScoreText>
+          <RankingUserText>{item.player.name}</RankingUserText>
+          <RankingScoreText>{item.scoreSum}</RankingScoreText>
         </RankingTextContainer>
       </div>
     </RankingItemContainer>
