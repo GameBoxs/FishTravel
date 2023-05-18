@@ -28,7 +28,10 @@ export const RankingMap = ({ id, isLoaded, isDomestic }: Props) => {
       markerArrRef.current = new Array<naver.maps.Marker>;
       polylineArrRef.current = new Array<naver.maps.Polyline>;
       infoWindowArrRef.current = new Array<naver.maps.InfoWindow>;
-      for (const pos of rounds.at(-1)?.scores!) { 
+      for (const pos of rounds.at(-1)?.scores!) {
+        if (!pos.answer.lat || !pos.answer.lng) { 
+          continue;
+        }
         const marker = new naver.maps.Marker({
           position: new naver.maps.LatLng(pos.answer.lat, pos.answer.lng),
           map: mapRef.current,
@@ -101,6 +104,9 @@ export const RankingMap = ({ id, isLoaded, isDomestic }: Props) => {
         scale: 4,
       };
       for (const pos of rounds.at(-1)?.scores!) { 
+        if (!pos.answer.lat || !pos.answer.lng) { 
+          continue;
+        }
         markerArrRef.current?.push(
           new google.maps.Marker({
             position: new google.maps.LatLng(pos.answer.lat, pos.answer.lng),
