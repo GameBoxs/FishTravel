@@ -29,9 +29,9 @@ const SelectSection = () => {
       });
   };
 
-  const startSingle = (isDomestic: boolean) => {
+  const startSingle = (isDomestic: string) => {
     navigate(`/game/single`, {
-      state: '*',
+      state: isDomestic,
     });
   };
 
@@ -49,10 +49,10 @@ const SelectSection = () => {
           <CodeInsertModal isOpen={isOpen} onClose={closeInsertModal} />
         </Style.GameEnterBtnWrapper>
         <Style.GameEnterBtnWrapper color="red">
-          <GameEnterBtn color="red" onClick={() => startSingle(true)} />
+          <GameEnterBtn color="red" onClick={() => startSingle('international')} />
         </Style.GameEnterBtnWrapper>
         <Style.GameEnterBtnWrapper color="white">
-          <GameEnterBtn color="white" onClick={() => startSingle(false)} />
+          <GameEnterBtn color="white" onClick={() => startSingle('domestic')} />
         </Style.GameEnterBtnWrapper>
       </Style.SelectSectionWrapper>
     </>
