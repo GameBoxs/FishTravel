@@ -50,9 +50,7 @@ const ResultMap = (props:propsType) => {
             <Style.ResultMap ref={resultMapRef} />
             <Style.ResultInfo>
                 <Style.ResultText>떨어진 거리</Style.ResultText>
-                <Style.ResultText>Score</Style.ResultText>
                 <Style.ResultText>{distancePoint}{distanceUnit}</Style.ResultText>
-                <Style.ResultText>4</Style.ResultText>
             </Style.ResultInfo>
             {
                 currentStage != 3 ? 
