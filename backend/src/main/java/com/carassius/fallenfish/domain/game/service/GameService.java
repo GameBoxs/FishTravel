@@ -1,5 +1,6 @@
 package com.carassius.fallenfish.domain.game.service;
 
+import com.carassius.fallenfish.common.util.DistanceCalculator;
 import com.carassius.fallenfish.common.util.RandomId;
 import com.carassius.fallenfish.domain.game.dto.*;
 import com.carassius.fallenfish.domain.game.entity.MessageCode;
@@ -23,6 +24,7 @@ public class GameService {
     private final MemberRepository memberRepository;
     private final RedisTemplate<String, Object> redisTemplate;
     private final ObjectMapper objectMapper;
+    private final DistanceCalculator distanceCalculator;
 
     public void setRedisValue(String key, Object classType) throws JsonProcessingException {
         redisTemplate.opsForValue().set(key, objectMapper.writeValueAsString(classType));
@@ -71,6 +73,7 @@ public class GameService {
         RoundInfo[] rounds = new RoundInfo[playerCount];
         for(int i = 0; i < playerCount; i++) {
             rounds[i] = new RoundInfo();
+            rounds[i].setScores(new ArrayList<>());
             rounds[i].setRoundOrder(i+1);
         }
         gameInfo.setRounds(rounds);
@@ -110,16 +113,33 @@ public class GameService {
     public MarkerRequest startRound(String roomId, int i) throws JsonProcessingException {
         GameInfo gameInfo = getRedisValue(roomId, GameInfo.class);
         gameInfo.setCode(MessageCode.IN_ROUND);
-        setRedisValue(roomId, gameInfo);
 
         Player player = gameInfo.getPlayers().get(i);
         PlayerInfo playerInfo = getRedisValue("member_" + player.getId(), PlayerInfo.class);
+
+        gameInfo.getRounds()[i].setProblem(playerInfo.getProblemMarker());
+
+        setRedisValue(roomId, gameInfo);
+
         return playerInfo.getProblemMarker();
     }
 
-    public GameInfo endRound(String roomId) throws JsonProcessingException {
+    public GameInfo endRound(String roomId, int currentRound) throws JsonProcessingException {
         GameInfo gameInfo = getRedisValue(roomId, GameInfo.class);
         gameInfo.setCode(MessageCode.ROUND_RESULT);
+        RoundInfo roundInfo = gameInfo.getRounds()[currentRound];
+        MarkerRequest problem = roundInfo.getProblem();
+        List<Player> players = gameInfo.getPlayers();
+        for(Player player : players) {
+            String key = "member_" + player.getId();
+            PlayerInfo playerInfo = getRedisValue(key, PlayerInfo.class);
+            MarkerRequest answer = playerInfo.getAnswerMarkers()[currentRound];
+            double distance = distanceCalculator.calculateDistance(problem.getLat(), problem.getLng(), answer.getLat(), answer.getLng(), "meter");
+            Score score = new Score();
+            score.setAnswer(answer);
+            score.setDistance(distance);
+            roundInfo.getScores().add(score);
+        }
         setRedisValue(roomId, gameInfo);
         return gameInfo;
     }

@@ -9,5 +9,6 @@ import java.util.List;
 @NoArgsConstructor
 public class RoundInfo {
     private int roundOrder;
+    private MarkerRequest problem;
     private List<Score> scores;
 }
