@@ -2,50 +2,21 @@ import { useState } from 'react';
 import styled from "styled-components";
 import { RankingItem } from "./RankingItem";
 import { BsChevronBarDown, BsChevronBarUp } from "react-icons/bs";
+import { useGameInfoStore } from '../../pages/MultiGamePage';
 
 type Props = {
   isDomestic: boolean
 };
-const list = [
-  {
-    ranking: 1,
-    memberId: "김이박",
-    score: 100,
-  },
-  {
-    ranking: 2,
-    memberId: "이박최asdasdasd",
-    score: 99,
-  },
-  {
-    ranking: 3,
-    memberId: "박최정",
-    score: 90,
-  },
-  {
-    ranking: 4,
-    memberId: "최정강",
-    score: 80,
-  },
-  {
-    ranking: 5,
-    memberId: "강김최",
-    score: 70,
-  },
-  {
-    ranking: 5,
-    memberId: "강김최",
-    score: 70,
-  },
-]
+
 export const Ranking = ({isDomestic}: Props) => {
   const [isExpand, setIsExpand] = useState(false);
+  const { rankingArray } = useGameInfoStore();
   return (
     <RankingContainer isExpand={isExpand} isDomestic={isDomestic}>
       <RankingContent>
-        {isExpand ? list.map((ranking) => <RankingItem item={ranking} />)
-          : <RankingItem item={list[0]} />
-        }
+        {rankingArray !== null && (isExpand ? rankingArray.map((ranking, index) => <RankingItem item={ranking} rank={index+1} />)
+          : <RankingItem item={rankingArray[0]} rank={1} />
+        )}
       </RankingContent>
       <RankingControlPanel>
         <RankingCollapseButton onClick={() => { setIsExpand((prev)=>!prev)}}>
