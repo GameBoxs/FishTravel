@@ -51,21 +51,6 @@ const DotTransition = {
 };
 
 export const LoadingIndicator = (props: Props) => {
-  const { setGameStage } = useGameSettingStore();
-  const [time, setTime] = useState(20);
-  useEffect(() => { 
-    const timer = setInterval(() => {
-      setTime((prev) => {
-        return prev > 0 ? prev - 1 : 0;
-      });
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [])
-  useEffect(() => { 
-    if (time == 0) {
-      setGameStage(1);
-    }
-  }, [time])
   return (
     <motion.div
     style={LoadingContainer}
@@ -73,7 +58,6 @@ export const LoadingIndicator = (props: Props) => {
     initial="start"
     animate="end"
     >
-      { time }
     <motion.span
       style={LoadingDot}
       variants={DotVariants}
