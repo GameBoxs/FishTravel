@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import * as Style from "./ResultMapGoogle.Styled";
 import * as Api from "../../../action/module/singleplay/international/SingleInternationalResultAPI";
+import { SingleLoading } from "../../layout/single/SingleLoading";
 
 type propsType = {
     selectPosition: google.maps.LatLng | null;
@@ -59,7 +60,7 @@ const ResultMapGoogle = (props:propsType) => {
                 <Style.ResultNextBtn onClick={moveHome}>Finish</Style.ResultNextBtn>
             }
         </Style.ResultWrapper>
-        : <h1>로딩중</h1>
+        : <SingleLoading />
     )
 }
 

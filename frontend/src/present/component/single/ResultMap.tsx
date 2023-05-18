@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import * as Style from "./ResultMap.Styled";
 import * as Api from "../../../action/module/singleplay/domestic/SingleDomesticResultAPI";
+import { SingleLoading } from "../../layout/single/SingleLoading";
 
 type propsType = {
     selectPosition: naver.maps.LatLng | null;
@@ -59,7 +60,7 @@ const ResultMap = (props:propsType) => {
                 <Style.ResultNextBtn onClick={moveHome}>Finish</Style.ResultNextBtn>
             }
         </Style.ResultWrapper>
-        : <h1>로딩중</h1>
+        : <SingleLoading />
     )
 }
 
