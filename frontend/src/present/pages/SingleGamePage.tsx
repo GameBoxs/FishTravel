@@ -4,6 +4,7 @@ import useLoadScript from '../../action/hooks/useLoadScript';
 
 import SingleDomestic from '../layout/single/SingleDomestic';
 import SingleInternational from '../layout/single/SingleInternational';
+import { SingleLoading } from '../layout/single/SingleLoading';
 
 const SingleGamePage = () => {
   const { state } = useLocation();
@@ -25,7 +26,7 @@ const SingleGamePage = () => {
 
   return (
     <React.Fragment>
-      {showMap ? locationMod === 'domestic' ? <SingleDomestic /> : <SingleInternational /> : <h1>로딩중...</h1>}
+      {showMap ? locationMod === 'domestic' ? <SingleDomestic /> : <SingleInternational /> : <SingleLoading />}
     </React.Fragment>
   );
 };
