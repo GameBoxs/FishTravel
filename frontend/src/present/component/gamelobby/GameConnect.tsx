@@ -14,7 +14,7 @@ const GameConnect = ({ roomCode, setRoomCode, callback }: any) => {
     if (roomCode != null) {
       setConnection(
         new Client({
-          brokerURL: 'ws://localhost:8080/api/ws',
+          brokerURL: 'ws://k8d205.p.ssafy.io/api/ws',
           connectHeaders: {
             login: 'guest',
             passcode: 'guest',

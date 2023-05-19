@@ -17,7 +17,7 @@ const SelectSection = () => {
     let propsCode: string;
 
     axios
-      .get(`http://localhost:8080/api/room/create?domestic=${isDomestic}`, {
+      .get(`https://k8d205.p.ssafy.io/api/room/create?domestic=${isDomestic}`, {
         withCredentials: true,
       })
       .then((response) => {
