@@ -180,7 +180,7 @@ export const MultiGameDomestic = ({isObserver}: Props) => {
             </CustomButton>
           </div>
       </React.Fragment> }
-      <Timer initialTime={100} />
+      <Timer initialTime={30} />
       <Ranking isDomestic={true} />
     </div>
   );
