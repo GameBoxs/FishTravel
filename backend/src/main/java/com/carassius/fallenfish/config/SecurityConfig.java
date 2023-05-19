@@ -32,6 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests() // 애플리케이션에 들어오는 요청에 대한 사용 권한을 체크
                 .antMatchers(HttpMethod.POST, "/**").authenticated()
+                .antMatchers(HttpMethod.GET, "/room/create").authenticated()
                 .anyRequest().permitAll();
 
         http.cors()                     // CORS on

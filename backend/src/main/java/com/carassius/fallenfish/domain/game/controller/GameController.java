@@ -3,6 +3,7 @@ package com.carassius.fallenfish.domain.game.controller;
 import com.carassius.fallenfish.domain.game.dto.*;
 import com.carassius.fallenfish.domain.game.entity.MessageCode;
 import com.carassius.fallenfish.domain.game.service.GameService;
+import com.carassius.fallenfish.security.LoginUser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,9 +29,9 @@ public class GameController {
 
     // 방 생성하기 - RabbitMQ에 사용할 방 랜덤ID를 생성해서 방장에게 전달한다.
     @GetMapping("/room/create")
-    public ResponseEntity<?> createGameRoom(@RequestParam("domestic") boolean domestic) throws JsonProcessingException {
+    public ResponseEntity<?> createGameRoom(@AuthenticationPrincipal LoginUser loginUser, @RequestParam("domestic") boolean domestic) throws JsonProcessingException {
         //TODO: 방장 ID 추출
-        String roomId = gameService.createGameRoom(1L, domestic);
+        String roomId = gameService.createGameRoom(loginUser.getId(), domestic);
         return new ResponseEntity<>(roomId, HttpStatus.OK);
     }
 
