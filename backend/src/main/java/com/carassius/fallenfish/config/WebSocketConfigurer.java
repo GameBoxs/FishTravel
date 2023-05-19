@@ -16,7 +16,8 @@ public class WebSocketConfigurer implements WebSocketMessageBrokerConfigurer {
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/pub", "/topic")
                 .enableStompBrokerRelay("/topic")
-                .setRelayHost("localhost")
+//                .setRelayHost("localhost")
+                .setRelayHost("rabbitmq")
                 .setVirtualHost("/")
                 .setRelayPort(61613)
                 .setClientLogin("guest")
