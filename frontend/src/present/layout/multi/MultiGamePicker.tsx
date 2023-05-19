@@ -137,7 +137,7 @@ const PickingButton = styled.button<{isDisabled: boolean}>`
   border-radius: 2.5rem;
   border: none;
   font-weight: bold;
-  background: ${(props)=>props.isDisabled ? "#48d845" : "#AAAAAA"};
+  background: ${(props)=>props.isDisabled ? "#AAAAAA" : "#48d845"};
   color: white;
 `
 const Seperator = styled.span`
