@@ -151,7 +151,7 @@ public class GameService {
             String key = "member_" + player.getId();
             PlayerInfo playerInfo = getRedisValue(key, PlayerInfo.class);
             MarkerRequest answer = playerInfo.getAnswerMarkers()[currentRound];
-            double distance = 100000000;
+            double distance = 0;
             if (answer != null) {
                 distance = distanceCalculator.calculateDistance(problem.getLat(), problem.getLng(), answer.getLat(), answer.getLng(), "meter");
             } else {

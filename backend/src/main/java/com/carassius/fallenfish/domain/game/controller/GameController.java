@@ -99,7 +99,7 @@ public class GameController {
             simpMessageSendingOperations.convertAndSend("/topic/" + roomId, broadcastMessage);
 
             // 2. 5초
-            wait(10000);
+            wait(8000);
 
             // 3. 라운드 시작 신호
             MarkerRequest markerRequest = gameService.startRound(roomId, i);
