@@ -80,7 +80,9 @@ export const useGameInfoStore = create<TGameData>((set, get) => ({
     ...state,
     rankingArray: state.rankingArray!.map((r) => ({
       ...r,
-      scoreSum: r.scoreSum + state.rounds!.find((r) => r.roundOrder == get().currentRound)!.scores.filter((s) => s.answer.requester.id === r.player.id)[0]?.distance,
+      scoreSum: r.scoreSum + (state.problemRequester!.id === r.player.id
+        ? 0
+        : state.rounds!.find((r) => r.roundOrder == get().currentRound)!.scores.find((s) => s.answer.requester.id === r.player.id)!.distance),
     })).sort((a, b) => a.scoreSum < b.scoreSum ? -1 : a.scoreSum === b.scoreSum ? 0 : 1),
   })),
   updateObservingMarkerArray: (value: TMarkerRequest) => set((state) => ({
