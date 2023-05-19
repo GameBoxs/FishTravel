@@ -13,9 +13,9 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 public class WebSocketConfigurer implements WebSocketMessageBrokerConfigurer {
 
-    @Value("${spring.rabbitmq.host")
+    @Value("${spring.rabbitmq.host}")
     private String host;
-    @Value("${spring.rabbitmq.port")
+    @Value("${spring.rabbitmq.port}")
     private int port;
 
     @Override
