@@ -1,0 +1,2 @@
+insert into MY_TABLE (id, created_date, login_id, name, password, provider)
+values  (1, '2023-05-03 10:09:57.507105', 'kakao_0000000000', '이희수', '$2a$10$c1FJzjGKGgbVhjKiTQvraeRntZIqe1O1Okr0hRLfpKk69VD.QCkTi', 'kakao');
