@@ -82,7 +82,7 @@ public class GameController {
                 .build();
         simpMessageSendingOperations.convertAndSend("/topic/" + roomId, broadcastMessage);
 
-        wait(7000);
+        wait(20000);
 
         // TODO: 마커 안찍은놈 랜덤 마커 처리
 
@@ -99,7 +99,7 @@ public class GameController {
             simpMessageSendingOperations.convertAndSend("/topic/" + roomId, broadcastMessage);
 
             // 2. 5초
-            wait(7000);
+            wait(10000);
 
             // 3. 라운드 시작 신호
             MarkerRequest markerRequest = gameService.startRound(roomId, i);
@@ -110,7 +110,7 @@ public class GameController {
             simpMessageSendingOperations.convertAndSend("/topic/" + roomId, roundMessage);
 
             // 4. n초동안 문제를 풉니다.
-            wait(7000);
+            wait(30000);
 
             // 5. 라운드 종료 신호
             gameInfo = gameService.endRound(roomId, i);
@@ -121,7 +121,7 @@ public class GameController {
             simpMessageSendingOperations.convertAndSend("/topic/" + roomId, broadcastMessage);
 
             // 6. n초 동안 결과보여주고
-            wait(7000);
+            wait(10000);
             // 7번으로 되돌아감
         }
         System.out.println(roomId + " : 게임 종료");
