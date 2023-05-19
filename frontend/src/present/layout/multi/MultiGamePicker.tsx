@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useGameInfoStore } from "../../pages/MultiGamePage";
 import { ImCheckmark } from "react-icons/im";
@@ -14,6 +14,7 @@ export const MultiGamePicker = ({isLoaded}: Props) => {
   const markerRef = useRef<naver.maps.Marker | google.maps.Marker | null>(null);
   const { connection, id, name } = useUserStore();
   const { roomId, domestic } = useGameInfoStore();
+  const [isFixed, setIsFixed] = useState(false);
   useEffect(() => { 
     if (isLoaded !== "ready") return;
     if (domestic && naver.maps.Map) {
@@ -91,14 +92,15 @@ export const MultiGamePicker = ({isLoaded}: Props) => {
           }
         })
       })
-    } 
+    }
+    setIsFixed(true);
   }
   return (
     <PickerContainer>
       <Timer initialTime={20}/>
       <MapContainer id="pickermap">
       </MapContainer>
-      <PickingButton onClick={handlePicker}>
+      <PickingButton onClick={handlePicker} disabled={isFixed} isDisabled={isFixed}>
         <ImCheckmark />
         <Seperator />
         선택
@@ -124,7 +126,7 @@ const MapContainer = styled.div`
   border-radius: 1.5rem;
   border: none;
 `
-const PickingButton = styled.button`
+const PickingButton = styled.button<{isDisabled: boolean}>`
   position: absolute;
   width: 50vw;
   left: 50%;
@@ -135,7 +137,7 @@ const PickingButton = styled.button`
   border-radius: 2.5rem;
   border: none;
   font-weight: bold;
-  background: #48d845;
+  background: ${(props)=>props.isDisabled ? "#AAAAAA" : "#48d845"};
   color: white;
 `
 const Seperator = styled.span`

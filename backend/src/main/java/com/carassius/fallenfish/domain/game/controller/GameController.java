@@ -31,7 +31,8 @@ public class GameController {
     @GetMapping("/room/create")
     public ResponseEntity<?> createGameRoom(@AuthenticationPrincipal LoginUser loginUser, @RequestParam("domestic") boolean domestic) throws JsonProcessingException {
         //TODO: 방장 ID 추출
-        String roomId = gameService.createGameRoom(loginUser.getId(), domestic);
+//        String roomId = gameService.createGameRoom(loginUser.getId(), domestic);
+        String roomId = gameService.createGameRoom(2L, domestic);
         return new ResponseEntity<>(roomId, HttpStatus.OK);
     }
 

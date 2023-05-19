@@ -21,7 +21,7 @@ export const MultiGameLoading = (props: Props) => {
             <motion.img src="https://static.wikia.nocookie.net/seuss/images/3/35/Parachute_Fish.PNG" alt="" initial={{scale: 1.5} } animate={{ scale: 1, rotateZ: 360, scaleX: 0, scaleY: 0}} transition={{repeat: Infinity, duration: 5}} />
           </MiddleContent>
           <FallingMessage>
-            {problemRequester?.name}이(가) 떨어지고 있습니다.
+            붕어를 찾을 시간입니다!
           </FallingMessage>
         </Jumbotron>
       </Background>
